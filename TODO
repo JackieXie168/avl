@@ -5,6 +5,4 @@ $URL$
 
 - never crash on passed NULL pointers
 
-- static initializers for trees and nodes
-
 - more avl_item_ functions

@@ -63,6 +63,12 @@ typedef void (*avl_freeitem_t)(void *);
 
 #define AVL_CMP(a,b) ((a) < (b) ? -1 : (a) > (b) ? 1 : 0)
 
+#if defined(AVL_COUNT) && defined(AVL_DEPTH)
+#define AVL_NODE_INIT(item) { 0, 0, 0, 0, 0, (item), 0, 0 }
+#else
+#define AVL_NODE_INIT(item) { 0, 0, 0, 0, 0, (item), 0 }
+#endif
+
 typedef struct avl_node_t {
 	struct avl_node_t *next;
 	struct avl_node_t *prev;
@@ -77,6 +83,8 @@ typedef struct avl_node_t {
 	unsigned char depth;
 #endif
 } avl_node_t;
+
+#define AVL_TREE_INIT(cmp,free) { 0, 0, 0, (cmp), (free) }
 
 typedef struct avl_tree_t {
 	avl_node_t *head;
