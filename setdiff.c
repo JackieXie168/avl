@@ -2,21 +2,20 @@
 
     setdiff.c - Example program for the AVL-tree library.
 
-    Copyright (C) 1998  Michael H. Buselli <cosine@cosine.org>
-    Copyright (C) 2000-2002  Wessel Dankers <wsl@nl.linux.org>
+    Copyright (C) 2000-2005  Wessel Dankers <wsl@nl.linux.org>
 
-    This library is free software; you can redistribute it and/or
+    This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
     License as published by the Free Software Foundation; either
     version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
+    License along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 
 *****************************************************************************/
@@ -66,16 +65,14 @@ static int stricmp(const char *a, const char *b) {
 }
 
 int main(int argc, char **argv) {
-	avl_tree_t t, u;
+	avl_tree_t u = AVL_TREE_INIT((avl_compare_t)stricmp, NULL);
+	avl_tree_t t = AVL_TREE_INIT((avl_compare_t)stricmp, NULL);
 	avl_node_t *c;
 
 	if(argc != 3) {
 		fprintf(stderr, "Requires exactly 2 arguments.\n");
 		exit(2);
 	}
-
-	avl_tree_init(&t, (avl_compare_t)stricmp, NULL);
-	avl_tree_init(&u, (avl_compare_t)stricmp, NULL);
 
 	readinto(&t, argv[1]);
 	readinto(&u, argv[2]);

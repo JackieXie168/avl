@@ -84,6 +84,8 @@ typedef struct avl_node_t {
 #endif
 } avl_node_t;
 
+extern avl_node_t avl_node_0;
+
 #define AVL_TREE_INIT(cmp,free) { 0, 0, 0, (cmp), (free) }
 
 typedef struct avl_tree_t {
@@ -93,6 +95,8 @@ typedef struct avl_tree_t {
 	avl_compare_t cmp;
 	avl_freeitem_t freeitem;
 } avl_tree_t;
+
+extern avl_tree_t avl_tree_0;
 
 /* Initializes a new tree for elements that will be ordered using
  * the supplied strcmp()-like function.
