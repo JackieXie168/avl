@@ -38,7 +38,7 @@ $(LIBAVL): avl.o
 	$(LN) -nostdlib -shared -Wl,-soname,libavl.so.1 $^ -o $@ -lc
 
 clean:
-	$(RM) *.o $(PROGRAMS) libavl.*
+	$(RM) *.o $(PROGRAMS) libavl.so.*
 
 install: all
 	$(INSTALL) -d $(DESTDIR)$(includedir)
