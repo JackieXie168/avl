@@ -3,7 +3,7 @@
     avl.h - Source code for the AVL-tree library.
 
     Copyright (C) 1998  Michael H. Buselli <cosine@cosine.org>
-    Copyright (C) 2000-2002  Wessel Dankers <wsl@nl.linux.org>
+    Copyright (C) 2000-2005  Wessel Dankers <wsl@nl.linux.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public

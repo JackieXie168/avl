@@ -3,7 +3,7 @@
     avl.c - Source code for the AVL-tree library.
 
     Copyright (C) 1998  Michael H. Buselli <cosine@cosine.org>
-    Copyright (C) 2000-2002  Wessel Dankers <wsl@nl.linux.org>
+    Copyright (C) 2000-2005  Wessel Dankers <wsl@nl.linux.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -232,7 +232,7 @@ int avl_search_right(const avl_tree_t *avltree, const void *item, avl_node_t **a
 	}
 }
 
-int avl_search_leftish(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
+int avl_search_rightish(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
 	avl_node_t *node;
 	avl_compare_t cmp;
 	int c;
@@ -268,7 +268,7 @@ int avl_search_leftish(const avl_tree_t *avltree, const void *item, avl_node_t *
 
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	avl_node_t *node;
-	return avl_search_leftish(avltree, item, &node) ? node : NULL;
+	return avl_search_rightish(avltree, item, &node) ? node : NULL;
 }
 
 avl_tree_t *avl_tree_init(avl_tree_t *rc, avl_compare_t cmp, avl_freeitem_t freeitem) {
@@ -389,7 +389,7 @@ avl_node_t *avl_insert_after(avl_tree_t *avltree, avl_node_t *node, avl_node_t *
 avl_node_t *avl_insert(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *node;
 
-	if(!avl_search_leftish(avltree, newnode->item, &node) || !node)
+	if(!avl_search_rightish(avltree, newnode->item, &node) || !node)
 		return avl_insert_after(avltree, node, newnode);
 
 	return NULL;
@@ -398,8 +398,8 @@ avl_node_t *avl_insert(avl_tree_t *avltree, avl_node_t *newnode) {
 avl_node_t *avl_insert_somewhere(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *node;
 
-	avl_search_left(avltree, newnode->item, &node);
-	return avl_insert_before(avltree, node, newnode);
+	avl_search_rightish(avltree, newnode->item, &node);
+	return avl_insert_after(avltree, node, newnode);
 }
 
 avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
