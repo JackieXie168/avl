@@ -8,5 +8,3 @@ $URL$
 - static initializers for trees and nodes
 
 - more avl_item_ functions
-
-- avl_search only true for exact match (not for empty tree)
