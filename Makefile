@@ -24,9 +24,9 @@ PROGRAMS = avlsort setdiff
 LIBAVL = libavl.so.2.0
 LIBRARIES = $(LIBAVL)
 
-all: $(LIBAVL)
+default: $(LIBAVL)
 
-test: $(PROGRAMS)
+all: $(LIBAVL) $(PROGRAMS)
 
 setdiff: setdiff.o avl.o
 	$(LN) $(LDFLAGS) $^ -o $@ $(LIBS)
