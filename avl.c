@@ -239,7 +239,33 @@ int avl_search_right(const avl_tree_t *avltree, const void *item, avl_node_t **a
  */
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	avl_node_t *node;
-	return avl_search_closest(avltree, item, &node) ? NULL : node;
+	avl_compare_t cmp;
+	int c;
+
+	node = avltree->top;
+
+	if(!node)
+		return NULL;
+
+	cmp = avltree->cmp;
+
+	for(;;) {
+		c = cmp(item, node->item);
+
+		if(c < 0) {
+			if(node->right)
+				node = node->right;
+			else
+				return NULL;
+		} else if(c > 0) {
+			if(node->left)
+				node = node->left;
+			else
+				return NULL;
+		} else {
+			return node;
+		}
+	}
 }
 
 avl_tree_t *avl_tree_init(avl_tree_t *rc, avl_compare_t cmp, avl_freeitem_t freeitem) {
