@@ -334,7 +334,11 @@ avl_node_t *avl_node_init(avl_node_t *newnode, void *item) {
 	return newnode;
 }
 
-avl_node_t *avl_insert_top(avl_tree_t *avltree, avl_node_t *newnode) {
+/* Insert a node in an empty tree. If avlnode is NULL, the tree will be
+ * cleared and ready for re-use.
+ * If the tree is not empty, the old nodes are left dangling.
+ * O(1) */
+static avl_node_t *avl_insert_top(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_clear(newnode);
 	newnode->prev = newnode->next = newnode->parent = NULL;
 	avltree->head = avltree->tail = avltree->top = newnode;
@@ -432,6 +436,24 @@ avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, void *item) {
 	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
 	if(newnode)
 		return avl_insert_somewhere(avltree, newnode);
+	return NULL;
+}
+
+avl_node_t *avl_item_insert_before(avl_tree_t *avltree, avl_node_t *node, void *item) {
+	avl_node_t *newnode;
+
+	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
+	if(newnode)
+		return avl_insert_before(avltree, node, newnode);
+	return NULL;
+}
+
+avl_node_t *avl_item_insert_after(avl_tree_t *avltree, avl_node_t *node, void *item) {
+	avl_node_t *newnode;
+
+	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
+	if(newnode)
+		return avl_insert_after(avltree, node, newnode);
 	return NULL;
 }
 

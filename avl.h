@@ -136,25 +136,62 @@ extern avl_node_t *avl_node_init(avl_node_t *avlnode, void *item);
 extern avl_node_t *avl_item_insert(avl_tree_t *, void *item);
 
 /* Insert an item into the tree and return the new node.
- * Returns NULL and sets errno if memory for the new node could not be
- * allocated.
+ * If a nodes with equal items are already in the tree, this item will
+ * be inserted to the left of all those. Returns NULL and sets errno if
+ * memory for the new node could not be allocated.
+ * O(lg n) */
+extern avl_node_t *avl_item_insert_left(avl_tree_t *, void *);
+
+/* Insert an item into the tree and return the new node.
+ * If a nodes with equal items are already in the tree, this item will
+ * be inserted to the right of all those. Returns NULL and sets errno if
+ * memory for the new node could not be allocated.
+ * O(lg n) */
+extern avl_node_t *avl_item_insert_right(avl_tree_t *, void *);
+
+/* Insert an item into the tree and return the new node.
+ * If a nodes with equal items are already in the tree, this item will
+ * be inserted somewhere among those. Returns NULL and sets errno if
+ * memory for the new node could not be allocated.
  * O(lg n) */
 extern avl_node_t *avl_item_insert_somewhere(avl_tree_t *, void *item);
 
-/* Insert a node into the tree and return it.
+/* Insert an item before another node. Returns the new node.
+ * If old is NULL, the item is appended to the tree.
+ * Returns NULL and sets errno if memory for the new node could not be
+ * allocated.
  * O(lg n) */
-extern avl_node_t *avl_insert_somewhere(avl_tree_t *, avl_node_t *);
+extern avl_node_t *avl_item_insert_before(avl_tree_t *, avl_node_t *old, void *new);
+
+/* Insert an item after another node. Returns the new node.
+ * If old is NULL, the item is prepended to the tree.
+ * Returns NULL and sets errno if memory for the new node could not be
+ * allocated.
+ * O(lg n) */
+extern avl_node_t *avl_item_insert_after(avl_tree_t *, avl_node_t *old, void *new);
 
 /* Insert a node into the tree and return it.
- * Returns NULL if the node is already in the tree.
+ * Returns NULL if an equal node is already in the tree.
  * O(lg n) */
 extern avl_node_t *avl_insert(avl_tree_t *, avl_node_t *);
 
-/* Insert a node in an empty tree. If avlnode is NULL, the tree will be
- * cleared and ready for re-use.
- * If the tree is not empty, the old nodes are left dangling.
- * O(1) */
-extern avl_node_t *avl_insert_top(avl_tree_t *, avl_node_t *avlnode);
+/* Insert a node into the tree and return it.
+ * If a nodes with equal items are already in the tree, this node will
+ * be inserted to the left of all those.
+ * O(lg n) */
+extern avl_node_t *avl_insert_left(avl_tree_t *, avl_node_t *);
+
+/* Insert a node into the tree and return it.
+ * If a nodes with equal items are already in the tree, this node will
+ * be inserted to the right of all those.
+ * O(lg n) */
+extern avl_node_t *avl_insert_right(avl_tree_t *, avl_node_t *);
+
+/* Insert a node into the tree and return it.
+ * If a nodes with equal items are already in the tree, this node will
+ * be inserted somewhere among those.
+ * O(lg n) */
+extern avl_node_t *avl_insert_somewhere(avl_tree_t *, avl_node_t *);
 
 /* Insert a node before another node. Returns the new node.
  * If old is NULL, the item is appended to the tree.
@@ -190,9 +227,31 @@ extern void *avl_item_delete(avl_tree_t *, const void *item);
  * O(1) */
 extern avl_node_t *avl_fixup(avl_tree_t *, avl_node_t *new);
 
-/* Searches for a node with the key closest (or equal) to the given item.
+/* Searches for an item, returning either the first (leftmost) exact
+ * match, or (if no exact match could be found) the first (leftmost)
+ * of the nodes that have an item greater than the search item.
  * If exact is not NULL, *exact will be set to:
- *    0  if the returned node is smaller or if the tree is empty
+ *    0  if the returned node is inequal or NULL
+ *    1  if the returned node is equal
+ * Returns NULL if no equal or greater element could be found.
+ * O(lg n) */
+extern avl_node_t *avl_search_left(const avl_tree_t *, const void *item, int *exact);
+
+/* Searches for an item, returning either the last (rightmost) exact
+ * match, or (if no exact match could be found) the last (rightmost)
+ * of the nodes that have an item smaller than the search item.
+ * If exact is not NULL, *exact will be set to:
+ *    0  if the returned node is inequal or NULL
+ *    1  if the returned node is equal
+ * Returns NULL if no equal or smaller element could be found.
+ * O(lg n) */
+extern avl_node_t *avl_search_right(const avl_tree_t *, const void *item, int *exact);
+
+/* Searches for an item, returning either some exact
+ * match, or (if no exact match could be found) the last (rightmost)
+ * of the nodes that have an item smaller than the search item.
+ * If exact is not NULL, *exact will be set to:
+ *    0  if the returned node is inequal or NULL
  *    1  if the returned node is equal
  * Returns NULL if no equal or smaller element could be found.
  * O(lg n) */

@@ -4,5 +4,3 @@ $URL$
 - manpage!
 
 - never crash on passed NULL pointers
-
-- more avl_item_ functions
