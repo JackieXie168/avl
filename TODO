@@ -5,11 +5,6 @@ $URL$
 
 - create insert functions for the new search functions
 
-- create comparison functions for more types:
-	- float, double, etc.
-	- stuff from <sys/types.h>, <unistd.h> etc:
-		socklen_t, timeval, timespec, ...
-
 - never crash on passed NULL pointers
 
 - static initializers for trees and nodes

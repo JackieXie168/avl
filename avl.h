@@ -35,7 +35,11 @@
 #endif
 
 #ifdef HAVE_POSIX
+#include <time.h>
+#include <unistd.h>
+#include <sys/time.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #endif
 
 /* We need either depths, counts or both (the latter being the default) */
@@ -209,6 +213,8 @@ extern unsigned int avl_index(const avl_node_t *);
 #define AVL_CMP_DECLARE_T(t) extern int avl_cmp_##t(const t##_t, const t##_t);
 #define AVL_CMP_DECLARE_NAMED(n,t) extern int avl_cmp_##n(const t, const t);
 
+AVL_CMP_DECLARE(float)
+AVL_CMP_DECLARE(double)
 AVL_CMP_DECLARE(char)
 AVL_CMP_DECLARE(short)
 AVL_CMP_DECLARE(int)
@@ -224,6 +230,8 @@ __extension__
 AVL_CMP_DECLARE_NAMED(long_long, long long)
 __extension__
 AVL_CMP_DECLARE_NAMED(unsigned_long_long, unsigned long long)
+__extension__
+AVL_CMP_DECLARE_NAMED(long_double, long double)
 #endif
 
 #ifdef HAVE_C99
@@ -254,6 +262,10 @@ AVL_CMP_DECLARE_T(uint_least64)
 #endif
 
 #ifdef HAVE_POSIX
+AVL_CMP_DECLARE_T(time)
 AVL_CMP_DECLARE_T(size)
 AVL_CMP_DECLARE_T(ssize)
+AVL_CMP_DECLARE_T(socklen)
+
+extern int avl_cmp_timeval(const struct timeval *, const struct timeval *);
 #endif

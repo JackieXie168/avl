@@ -683,6 +683,9 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 #define AVL_CMP_DEFINE_T(t) int avl_cmp_##t(const t##_t a, const t##_t b) { return AVL_CMP(a,b); }
 #define AVL_CMP_DEFINE_NAMED(n,t) int avl_cmp_##n(const t a, const t b) { return AVL_CMP(a,b); }
 
+AVL_CMP_DEFINE(float)
+AVL_CMP_DEFINE(double)
+
 AVL_CMP_DEFINE(char)
 AVL_CMP_DEFINE(short)
 AVL_CMP_DEFINE(int)
@@ -700,6 +703,8 @@ __extension__
 AVL_CMP_DEFINE_NAMED(long_long, long long)
 __extension__
 AVL_CMP_DEFINE_NAMED(unsigned_long_long, unsigned long long)
+__extension__
+AVL_CMP_DEFINE_NAMED(long_double, long double)
 #endif
 
 #ifdef HAVE_C99
@@ -732,6 +737,16 @@ AVL_CMP_DEFINE_T(uint_least64)
 #endif
 
 #ifdef HAVE_POSIX
+AVL_CMP_DEFINE_T(time)
 AVL_CMP_DEFINE_T(size)
 AVL_CMP_DEFINE_T(ssize)
+AVL_CMP_DEFINE_T(socklen)
+
+int avl_cmp_timeval(const struct timeval *a, const struct timeval *b) {
+	int r;
+	r = AVL_CMP(a->tv_sec, b->tv_sec);
+	if(!r)
+		r = AVL_CMP(a->tv_usec, b->tv_usec);
+	return r;
+}
 #endif
