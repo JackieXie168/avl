@@ -12,13 +12,10 @@ $URL$
 
 - create insert functions for these new search functions
 
-- create comparison macro:
-	#define AVL_COMPARE(a,b) ((a) < (b) ? -1 : (a) > (b) ? 1 : 0)
-
-- create comparison functions for common types:
-	- int, short, long, float, double, pointer, etc.
-	- create avl_types.h for stuff from <sys/types.h>, <unistd.h> etc:
-		size_t, ssize_t, socklen_t, timeval, timespec, ...
+- create comparison functions for more types:
+	- float, double, etc.
+	- stuff from <sys/types.h>, <unistd.h> etc:
+		socklen_t, timeval, timespec, ...
 
 - never crash on passed NULL pointers
 
