@@ -191,7 +191,7 @@ int avl_search_left(const avl_tree_t *avltree, const void *item, avl_node_t **av
 			if(node->right)
 				node = node->right;
 			else
-				return *avlnode = avl_search_rightmost_equal(node, item, cmp), 0;
+				return *avlnode = node, 0;
 		} else {
 			return *avlnode = avl_search_leftmost_equal(node, item, cmp), 1;
 		}
@@ -225,18 +225,47 @@ int avl_search_right(const avl_tree_t *avltree, const void *item, avl_node_t **a
 			if(node->left)
 				node = node->left;
 			else
-				return *avlnode = avl_search_leftmost_equal(node, item, cmp), 0;
+				return *avlnode = node, 0;
 		} else {
 			return *avlnode = avl_search_rightmost_equal(node, item, cmp), 1;
 		}
 	}
 }
 
-/*
- * avl_search:
- * Return a pointer to a node with the given item in the tree.
- * If no such item is in the tree, then NULL is returned.
- */
+int avl_search_le(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
+	avl_node_t *node;
+	avl_compare_t cmp;
+	int c;
+
+	if(!avlnode)
+		avlnode = &node;
+
+	node = avltree->top;
+
+	if(!node)
+		return *avlnode = NULL, 1;
+
+	cmp = avltree->cmp;
+
+	for(;;) {
+		c = cmp(item, node->item);
+
+		if(c < 0) {
+			if(node->right)
+				node = node->right;
+			else
+				return *avlnode = NULL, 0;
+		} else if(c > 0) {
+			if(node->left)
+				node = node->left;
+			else
+				return *avlnode = node, 0;
+		} else {
+			return *avlnode = node, 1;
+		}
+	}
+}
+
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	avl_node_t *node;
 	avl_compare_t cmp;
@@ -394,15 +423,8 @@ avl_node_t *avl_insert_after(avl_tree_t *avltree, avl_node_t *node, avl_node_t *
 avl_node_t *avl_insert(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *node;
 
-	if(!avltree->top)
-		return avl_insert_top(avltree, newnode);
-
-	switch(avl_search_closest(avltree, newnode->item, &node)) {
-		case -1:
-			return avl_insert_before(avltree, node, newnode);
-		case 1:
-			return avl_insert_after(avltree, node, newnode);
-	}
+	if(avl_search_right(avltree, newnode->item, &node))
+		return avl_insert_after(avltree, node, newnode);
 
 	return NULL;
 }
@@ -410,20 +432,10 @@ avl_node_t *avl_insert(avl_tree_t *avltree, avl_node_t *newnode) {
 avl_node_t *avl_insert_somewhere(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *node;
 
-	if(!avltree->top)
-		return avl_insert_top(avltree, newnode);
-
-	if(avl_search_closest(avltree, newnode->item, &node) == 1)
-			return avl_insert_after(avltree, node, newnode);
-	else
-			return avl_insert_before(avltree, node, newnode);
+	avl_search_le(avltree, newnode->item, &node);
+	return avl_insert_after(avltree, node, newnode);
 }
 
-/*
- * avl_item_insert:
- * Create a new node and insert an item there.
- * Returns the new node on success or NULL if no memory could be allocated.
- */
 avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
 

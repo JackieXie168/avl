@@ -1,16 +1,9 @@
 $Id$
 $URL$
 
-- create avl_search_left:
-	- TRUE:
-		if(n) exact match: leftmost equal element returned;
-		else tree is empty;
-	- FALSE:
-		if(n) no exact match: rightmost smaller element returned;
-		else there is no smaller element than what you looked for
-	and ditto avl_search_right
+- manpage!
 
-- create insert functions for these new search functions
+- create insert functions for the new search functions
 
 - create comparison functions for more types:
 	- float, double, etc.
