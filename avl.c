@@ -198,6 +198,40 @@ int avl_search_left(const avl_tree_t *avltree, const void *item, avl_node_t **av
 	}
 }
 
+int avl_search_right(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
+	avl_node_t *node;
+	avl_compare_t cmp;
+	int c;
+
+	if(!avlnode)
+		avlnode = &node;
+
+	node = avltree->top;
+
+	if(!node)
+		return *avlnode = NULL, 1;
+
+	cmp = avltree->cmp;
+
+	for(;;) {
+		c = cmp(item, node->item);
+
+		if(c < 0) {
+			if(node->right)
+				node = node->right;
+			else
+				return *avlnode = NULL, 0;
+		} else if(c > 0) {
+			if(node->left)
+				node = node->left;
+			else
+				return *avlnode = avl_search_leftmost_equal(node, item, cmp), 0;
+		} else {
+			return *avlnode = avl_search_rightmost_equal(node, item, cmp), 1;
+		}
+	}
+}
+
 /*
  * avl_search:
  * Return a pointer to a node with the given item in the tree.
