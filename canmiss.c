@@ -102,7 +102,7 @@ static void toon_oplossingen(void) {
 		t = node->item;
 		if(t->totaal != totaal)
 			break;
-		if(t->afstand != ONEINDIG && !t->bootje)
+		if(t->afstand != ONEINDIG)
 			toon_oplossing(t);
 	}
 }
@@ -176,10 +176,12 @@ static void genereer_overgangen(void) {
 
 			if(opvarenden == 0 || opvarenden > 2)
 				continue; /* constraint! */
-
-			toon_toestand(t); putchar(32);
-			toon_toestand(dt); putchar(10);
-
+#ifdef DEBUG
+			toon_toestand(t);
+			printf(" → ");
+			toon_toestand(dt);
+			printf("\n");
+#endif
 			avl_item_insert(&t->overgangen, dt);
 		}
 	}
