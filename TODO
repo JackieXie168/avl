@@ -1,15 +1,6 @@
 $Id$
 $URL$
 
-- make avl_search_closest_smaller, returning only TRUE or FALSE:
-	- TRUE:
-		if(n) some exact match;
-		else tree is empty;
-	- FALSE:
-		if(n) no exact match: first smaller element returned;
-		else there is no smaller element than what you looked for
-	and ditto avl_search_closest_greater
-
 - create avl_search_closest_smallest:
 	- TRUE:
 		if(n) exact match: lastmost equal element returned;
