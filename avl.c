@@ -271,17 +271,18 @@ avl_tree_t *avl_tree_alloc(avl_compare_t cmp, avl_freeitem_t freeitem) {
 	return avl_tree_init(malloc(sizeof(avl_tree_t)), cmp, freeitem);
 }
 
-void avl_tree_clear(avl_tree_t *avltree) {
+avl_tree_t *avl_tree_clear(avl_tree_t *avltree) {
 	if(avltree)
 		avltree->top = avltree->head = avltree->tail = NULL;
+	return avltree;
 }
 
-void avl_tree_purge(avl_tree_t *avltree) {
+avl_tree_t *avl_tree_purge(avl_tree_t *avltree) {
 	avl_node_t *node, *next;
 	avl_freeitem_t freeitem;
 
 	if(!avltree)
-		return;
+		return NULL;
 
 	freeitem = avltree->freeitem;
 
@@ -292,7 +293,7 @@ void avl_tree_purge(avl_tree_t *avltree) {
 		free(node);
 	}
 
-	avl_tree_clear(avltree);
+	return avl_tree_clear(avltree);
 }
 
 void avl_tree_free(avl_tree_t *avltree) {
@@ -483,14 +484,14 @@ avl_node_t *avl_item_insert_right(avl_tree_t *avltree, void *item) {
 	return NULL;
 }
 
-void avl_unlink(avl_tree_t *avltree, avl_node_t *avlnode) {
+avl_node_t *avl_unlink(avl_tree_t *avltree, avl_node_t *avlnode) {
 	avl_node_t *parent;
 	avl_node_t **superparent;
 	avl_node_t *subst, *left, *right;
 	avl_node_t *balnode;
 
 	if(!avltree || !avlnode)
-		return;
+		return NULL;
 
 	if(avlnode->prev)
 		avlnode->prev->next = avlnode->next;
@@ -538,6 +539,8 @@ void avl_unlink(avl_tree_t *avltree, avl_node_t *avlnode) {
 	}
 
 	avl_rebalance(avltree, balnode);
+
+	return avlnode;
 }
 
 void *avl_delete(avl_tree_t *avltree, avl_node_t *avlnode) {
