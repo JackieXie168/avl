@@ -34,6 +34,9 @@ setdiff: setdiff.o avl.o
 avlsort: avlsort.o avl.o
 	$(LN) $(LDFLAGS) $^ -o $@ $(LIBS)
 
+canmiss: canmiss.o avl.o
+	$(LN) $(LDFLAGS) $^ -o $@ $(LIBS)
+
 $(LIBAVL): avl.o
 	$(LN) -nostdlib -shared -Wl,-soname,libavl.so.1 $^ -o $@ -lc
 
