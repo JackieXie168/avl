@@ -76,43 +76,43 @@ typedef struct avl_tree_t {
  * the supplied strcmp()-like function.
  * Returns the value of avltree (even if it's NULL).
  * O(1) */
-extern avl_tree_t *avl_init_tree(avl_tree_t *avltree, avl_compare_t, avl_freeitem_t);
+extern avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_compare_t, avl_freeitem_t);
 
 /* Allocates and initializes a new tree for elements that will be
  * ordered using the supplied strcmp()-like function.
  * Returns NULL if memory could not be allocated.
  * O(1) */
-extern avl_tree_t *avl_alloc_tree(avl_compare_t, avl_freeitem_t);
+extern avl_tree_t *avl_tree_alloc(avl_compare_t, avl_freeitem_t);
 
 /* Frees the entire tree efficiently. Nodes will be free()d.
  * If the tree's freeitem is not NULL it will be invoked on every item.
  * O(n) */
-extern void avl_free_tree(avl_tree_t *);
+extern void avl_tree_free(avl_tree_t *);
 
 /* Reinitializes the tree structure for reuse. Nothing is free()d.
  * Compare and freeitem functions are left alone.
  * O(1) */
-extern void avl_clear_tree(avl_tree_t *);
+extern void avl_tree_clear(avl_tree_t *);
 
 /* Free()s all nodes in the tree but leaves the tree itself.
  * If the tree's freeitem is not NULL it will be invoked on every item.
  * O(n) */
-extern void avl_free_nodes(avl_tree_t *);
+extern void avl_tree_purge(avl_tree_t *);
 
 /* Initializes memory for use as a node. Returns NULL if avlnode is NULL.
  * O(1) */
-extern avl_node_t *avl_init_node(avl_node_t *avlnode, void *item);
+extern avl_node_t *avl_node_init(avl_node_t *avlnode, void *item);
 
 /* Insert an item into the tree and return the new node.
  * Returns NULL and sets errno if memory for the new node could not be
  * allocated or if the node is already in the tree (EEXIST).
  * O(lg n) */
-extern avl_node_t *avl_insert(avl_tree_t *, void *item);
+extern avl_node_t *avl_item_insert(avl_tree_t *, void *item);
 
 /* Insert a node into the tree and return it.
  * Returns NULL if the node is already in the tree.
  * O(lg n) */
-extern avl_node_t *avl_insert_node(avl_tree_t *, avl_node_t *);
+extern avl_node_t *avl_insert(avl_tree_t *, avl_node_t *);
 
 /* Insert a node in an empty tree. If avlnode is NULL, the tree will be
  * cleared and ready for re-use.
@@ -134,25 +134,25 @@ extern avl_node_t *avl_insert_after(avl_tree_t *, avl_node_t *old, avl_node_t *n
  * The item will not be free()d regardless of the tree's freeitem handler.
  * This function comes in handy if you need to update the search key.
  * O(lg n) */
-extern void avl_unlink_node(avl_tree_t *, avl_node_t *);
+extern void avl_unlink(avl_tree_t *, avl_node_t *);
 
 /* Deletes a node from the tree. Returns immediately if the node is NULL.
  * If the tree's freeitem is not NULL, it is invoked on the item.
  * If it is, returns the item.
  * O(lg n) */
-extern void *avl_delete_node(avl_tree_t *, avl_node_t *);
+extern void *avl_delete(avl_tree_t *, avl_node_t *);
 
 /* Searches for an item in the tree and deletes it if found.
  * If the tree's freeitem is not NULL, it is invoked on the item.
  * If it is, returns the item.
  * O(lg n) */
-extern void *avl_delete(avl_tree_t *, const void *item);
+extern void *avl_item_delete(avl_tree_t *, const void *item);
 
 /* If exactly one node is moved in memory, this will fix the pointers
  * in the tree that refer to it. It must be an exact shallow copy.
  * Returns the pointer to the old position.
  * O(1) */
-extern avl_node_t *avl_fixup_node(avl_tree_t *, avl_node_t *new);
+extern avl_node_t *avl_fixup(avl_tree_t *, avl_node_t *new);
 
 /* Searches for a node with the key closest (or equal) to the given item.
  * If avlnode is not NULL, *avlnode will be set to the node found or NULL

@@ -6,13 +6,12 @@ INSTALL ?= /usr/bin/install
 LDCONFIG ?= /sbin/ldconfig
 
 # Some suggestions: (-mcpu= generates i386 compatible code)
-CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mcpu=i686 -w
+CC=gcc-4.0
 #CFLAGS = -O2 -fomit-frame-pointer -pipe -march=i586 -Wall -g
 #CFLAGS = -O6 -fomit-frame-pointer -pipe -march=i586 -Wall -ansi -pedantic
 #CFLAGS = -O6 -fomit-frame-pointer -pipe -march=i586 -Wall -ansi -pedantic
-#CFLAGS = -O6 -march=k6 -fforce-mem -fforce-addr -pipe
-#CFLAGS = -g -fomit-frame-pointer -pipe -march=i686 -Wall -ansi -pedantic
-#CFLAGS = -g -pg -a -pipe -march=i686 -Wall
+CFLAGS = -g -pg -pipe -march=i586 -Wall -Werror -ansi -pedantic
+CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mcpu=i686 -w
 #LDFLAGS = -s
 
 prefix ?= /usr/local

@@ -33,7 +33,7 @@
 void avl_insert_always(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode, *node;
 
-	newnode = avl_init_node(malloc(sizeof(avl_node_t)), item);
+	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
 	if(newnode) {
 		switch(avl_search_closest(avltree, newnode->item, &node)) {
 			case -1:
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
 	struct stat st;
 	int mmapped = 0;
 
-	t = avl_alloc_tree((avl_compare_t)strcmp, NULL);
+	t = avl_tree_alloc((avl_compare_t)strcmp, NULL);
 
 	u = 0;
 	if(!fstat(STDIN_FILENO, &st) && S_ISREG(st.st_mode)) {
@@ -141,7 +141,7 @@ int main(int argc, char **argv) {
 		avl_delete_node(t, t->top);
 	if(!t->top) fprintf(stderr, "Deleted all lines\n");
 
-	avl_free_nodes(t);
+	avl_tree_purge(t);
 
 	return 0;
 }

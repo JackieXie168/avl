@@ -54,7 +54,7 @@ void readinto(avl_tree_t *t, char *fname) {
 		e = s = realloc(s, len);
 		if(!s)
 			break;
-		avl_insert(t, s);
+		avl_item_insert(t, s);
 	}
 	if(!e) {
 		perror("malloc()");
@@ -72,19 +72,19 @@ int main(int argc, char **argv) {
 		exit(2);
 	}
 
-	avl_init_tree(&t, (avl_compare_t)strcmp, NULL);
-	avl_init_tree(&u, (avl_compare_t)strcmp, NULL);
+	avl_tree_init(&t, (avl_compare_t)strcmp, NULL);
+	avl_tree_init(&u, (avl_compare_t)strcmp, NULL);
 
 	readinto(&t, argv[1]);
 	readinto(&u, argv[2]);
 
 	for(c = t.head; c; c = c->next)
 		if(!avl_search(&u, c->item))
-			printf("-%s\n", c->item);
+			printf("-%s\n", (char *)c->item);
 
 	for(c = u.head; c; c = c->next)
 		if(!avl_search(&t, c->item))
-			printf("+%s\n", c->item);
+			printf("+%s\n", (char *)c->item);
 
 	return 0;
 }

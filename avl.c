@@ -48,20 +48,6 @@ static void avl_rebalance(avl_tree_t *, avl_node_t *);
 #define CALC_DEPTH(n)  ((L_DEPTH(n)>R_DEPTH(n)?L_DEPTH(n):R_DEPTH(n)) + 1)
 #endif
 
-#ifndef AVL_DEPTH
-/* Also known as ffs() (from BSD) */
-static int lg(unsigned int u) {
-	int r = 1;
-	if(!u) return 0;
-	if(u & 0xffff0000) { u >>= 16; r += 16; }
-	if(u & 0x0000ff00) { u >>= 8; r += 8; }
-	if(u & 0x000000f0) { u >>= 4; r += 4; }
-	if(u & 0x0000000c) { u >>= 2; r += 2; }
-	if(u & 0x00000002) r++;
-	return r;
-}
-#endif
-
 static int avl_check_balance(avl_node_t *avlnode) {
 #ifdef AVL_DEPTH
 	int d;
@@ -69,13 +55,13 @@ static int avl_check_balance(avl_node_t *avlnode) {
 	return d<-1?-1:d>1?1:0;
 #else
 /*	int d;
- *	d = lg(R_COUNT(avlnode)) - lg(L_COUNT(avlnode));
+ *	d = ffs(R_COUNT(avlnode)) - ffs(L_COUNT(avlnode));
  *	d = d<-1?-1:d>1?1:0;
  */
 #ifdef AVL_COUNT
 	int pl, r;
 
-	pl = lg(L_COUNT(avlnode));
+	pl = ffs(L_COUNT(avlnode));
 	r = R_COUNT(avlnode);
 
 	if(r>>pl+1)
@@ -175,7 +161,7 @@ avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	return avl_search_closest(avltree, item, &node) ? NULL : node;
 }
 
-avl_tree_t *avl_init_tree(avl_tree_t *rc, avl_compare_t cmp, avl_freeitem_t freeitem) {
+avl_tree_t *avl_tree_init(avl_tree_t *rc, avl_compare_t cmp, avl_freeitem_t freeitem) {
 	if(rc) {
 		rc->head = NULL;
 		rc->tail = NULL;
@@ -186,15 +172,15 @@ avl_tree_t *avl_init_tree(avl_tree_t *rc, avl_compare_t cmp, avl_freeitem_t free
 	return rc;
 }
 
-avl_tree_t *avl_alloc_tree(avl_compare_t cmp, avl_freeitem_t freeitem) {
-	return avl_init_tree(malloc(sizeof(avl_tree_t)), cmp, freeitem);
+avl_tree_t *avl_tree_alloc(avl_compare_t cmp, avl_freeitem_t freeitem) {
+	return avl_tree_init(malloc(sizeof(avl_tree_t)), cmp, freeitem);
 }
 
-void avl_clear_tree(avl_tree_t *avltree) {
+void avl_tree_clear(avl_tree_t *avltree) {
 	avltree->top = avltree->head = avltree->tail = NULL;
 }
 
-void avl_free_nodes(avl_tree_t *avltree) {
+void avl_tree_purge(avl_tree_t *avltree) {
 	avl_node_t *node, *next;
 	avl_freeitem_t freeitem;
 
@@ -207,21 +193,21 @@ void avl_free_nodes(avl_tree_t *avltree) {
 		free(node);
 	}
 
-	avl_clear_tree(avltree);
+	avl_tree_clear(avltree);
 }
 
 /*
- * avl_free_tree:
+ * avl_tree_free:
  * Free all memory used by this tree.  If freeitem is not NULL, then
  * it is assumed to be a destructor for the items referenced in the avl_
  * tree, and they are deleted as well.
  */
-void avl_free_tree(avl_tree_t *avltree) {
-	avl_free_nodes(avltree);
+void avl_tree_free(avl_tree_t *avltree) {
+	avl_tree_purge(avltree);
 	free(avltree);
 }
 
-static void avl_clear_node(avl_node_t *newnode) {
+static void avl_node_clear(avl_node_t *newnode) {
 	newnode->left = newnode->right = NULL;
 	#ifdef AVL_COUNT
 	newnode->count = 1;
@@ -231,16 +217,16 @@ static void avl_clear_node(avl_node_t *newnode) {
 	#endif
 }
 
-avl_node_t *avl_init_node(avl_node_t *newnode, void *item) {
+avl_node_t *avl_node_init(avl_node_t *newnode, void *item) {
 	if(newnode) {
-/*		avl_clear_node(newnode); */
+/*		avl_node_clear(newnode); */
 		newnode->item = item;
 	}
 	return newnode;
 }
 
 avl_node_t *avl_insert_top(avl_tree_t *avltree, avl_node_t *newnode) {
-	avl_clear_node(newnode);
+	avl_node_clear(newnode);
 	newnode->prev = newnode->next = newnode->parent = NULL;
 	avltree->head = avltree->tail = avltree->top = newnode;
 	return newnode;
@@ -255,7 +241,7 @@ avl_node_t *avl_insert_before(avl_tree_t *avltree, avl_node_t *node, avl_node_t 
 	if(node->left)
 		return avl_insert_after(avltree, node->prev, newnode);
 
-	avl_clear_node(newnode);
+	avl_node_clear(newnode);
 
 	newnode->next = node;
 	newnode->parent = node;
@@ -281,7 +267,7 @@ avl_node_t *avl_insert_after(avl_tree_t *avltree, avl_node_t *node, avl_node_t *
 	if(node->right)
 		return avl_insert_before(avltree, node->next, newnode);
 
-	avl_clear_node(newnode);
+	avl_node_clear(newnode);
 
 	newnode->prev = node;
 	newnode->parent = node;
@@ -298,7 +284,7 @@ avl_node_t *avl_insert_after(avl_tree_t *avltree, avl_node_t *node, avl_node_t *
 	return newnode;
 }
 
-avl_node_t *avl_insert_node(avl_tree_t *avltree, avl_node_t *newnode) {
+avl_node_t *avl_insert(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *node;
 
 	if(!avltree->top)
@@ -314,7 +300,7 @@ avl_node_t *avl_insert_node(avl_tree_t *avltree, avl_node_t *newnode) {
 	return NULL;
 }
 
-avl_node_t *avl_force_node(avl_tree_t *avltree, avl_node_t *newnode) {
+avl_node_t *avl_insert_somewhere(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *node;
 
 	if(!avltree->top)
@@ -327,16 +313,16 @@ avl_node_t *avl_force_node(avl_tree_t *avltree, avl_node_t *newnode) {
 }
 
 /*
- * avl_insert:
+ * avl_item_insert:
  * Create a new node and insert an item there.
  * Returns the new node on success or NULL if no memory could be allocated.
  */
-avl_node_t *avl_insert(avl_tree_t *avltree, void *item) {
+avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
 
-	newnode = avl_init_node(malloc(sizeof(avl_node_t)), item);
+	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
 	if(newnode) {
-		if(avl_insert_node(avltree, newnode))
+		if(avl_insert(avltree, newnode))
 			return newnode;
 		free(newnode);
 		errno = EEXIST;
@@ -345,12 +331,12 @@ avl_node_t *avl_insert(avl_tree_t *avltree, void *item) {
 }
 
 /*
- * avl_unlink_node:
+ * avl_unlink:
  * Removes the given node.  Does not delete the item at that node.
  * The item of the node may be freed before calling avl_unlink_node.
  * (In other words, it is not referenced by this function.)
  */
-void avl_unlink_node(avl_tree_t *avltree, avl_node_t *avlnode) {
+void avl_unlink(avl_tree_t *avltree, avl_node_t *avlnode) {
 	avl_node_t *parent;
 	avl_node_t **superparent;
 	avl_node_t *subst, *left, *right;
@@ -404,11 +390,11 @@ void avl_unlink_node(avl_tree_t *avltree, avl_node_t *avlnode) {
 	avl_rebalance(avltree, balnode);
 }
 
-void *avl_delete_node(avl_tree_t *avltree, avl_node_t *avlnode) {
+void *avl_delete(avl_tree_t *avltree, avl_node_t *avlnode) {
 	void *item = NULL;
 	if(avlnode) {
 		item = avlnode->item;
-		avl_unlink_node(avltree, avlnode);
+		avl_unlink(avltree, avlnode);
 		if(avltree->freeitem)
 			avltree->freeitem(item);
 		free(avlnode);
@@ -416,11 +402,11 @@ void *avl_delete_node(avl_tree_t *avltree, avl_node_t *avlnode) {
 	return item;
 }
 
-void *avl_delete(avl_tree_t *avltree, const void *item) {
-	return avl_delete_node(avltree, avl_search(avltree, item));
+void *avl_item_delete(avl_tree_t *avltree, const void *item) {
+	return avl_delete(avltree, avl_search(avltree, item));
 }
 
-avl_node_t *avl_fixup_node(avl_tree_t *avltree, avl_node_t *newnode) {
+avl_node_t *avl_fixup(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *oldnode = NULL, *node;
 
 	if(!avltree || !newnode)
@@ -465,7 +451,7 @@ avl_node_t *avl_fixup_node(avl_tree_t *avltree, avl_node_t *newnode) {
  * function, if a rebalance takes place, the top of this subtree is no
  * longer going to be the same node.
  */
-void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
+static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 	avl_node_t *child;
 	avl_node_t *gchild;
 	avl_node_t *parent;
