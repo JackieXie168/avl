@@ -1,0 +1,35 @@
+.TH avl_tree_init 3 2005-03-09 libavl "AVL Reference Guide"
+.SH NAME
+.BI avl_tree_init, avl_tree_alloc
+- functions to allocate and initialize an augmented AVL tree
+.SH SYNOPSYS
+.nf
+.B #include <avl.h>
+.sp
+.BI "avl_tree_t *avl_tree_init(avl_tree_t *" tree ", avl_compare_t " cmp ", avl_freeitem_t " free );
+.nl
+.BI "avl_tree_t *avl_tree_alloc(avl_compare_t " cmp ", avl_freeitem_t " free );
+.nl
+.BI "avl_tree_t *avl_tree_clear(avl_tree_t *" tree );
+.fi
+.SH DESCRIPTION
+.B avl_tree_init()
+initializes the structure pointed to by
+.I tree
+for use with other avl functions.
+.sp
+The elements in this tree will be ordered using the strcmp()-like function supplied in
+.I cmp
+(which may be
+.BR NULL
+for unsorted, ordered lists) and if
+.I free
+is not
+.BR NULL
+then the delete functions in the avl library will use this to free any memory associated with the item.
+.sp
+Returns the value of
+.I tree
+(even if it's
+.BR NULL ) .
+
