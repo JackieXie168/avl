@@ -4,3 +4,5 @@ $URL$
 - manpage!
 
 - changelog
+
+- avl_malloc + avl_free
