@@ -43,7 +43,6 @@ void avl_insert_always(avl_tree_t *avltree, void *item) {
 			case 1:
 				avl_insert_after(avltree, node, newnode);
 		}
-
 	}
 }
 

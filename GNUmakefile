@@ -6,8 +6,7 @@ INSTALL ?= /usr/bin/install
 LDCONFIG ?= /sbin/ldconfig
 
 # Some suggestions: (-mcpu= generates i386 compatible code)
-CFLAGS = -O9
-#CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mcpu=i686 -w
+CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mcpu=i686 -w
 #CFLAGS = -O2 -fomit-frame-pointer -pipe -march=i586 -Wall -g
 #CFLAGS = -O6 -fomit-frame-pointer -pipe -march=i586 -Wall -ansi -pedantic
 #CFLAGS = -O6 -fomit-frame-pointer -pipe -march=i586 -Wall -ansi -pedantic
@@ -22,7 +21,7 @@ libdir ?= $(prefix)/lib
 includedir ?= /usr/include
 
 PROGRAMS = avlsort setdiff
-LIBAVL = libavl.so.1.5
+LIBAVL = libavl.so.1.6
 LIBRARIES = $(LIBAVL)
 
 all: $(LIBAVL)

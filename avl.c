@@ -314,6 +314,18 @@ avl_node_t *avl_insert_node(avl_tree_t *avltree, avl_node_t *newnode) {
 	return NULL;
 }
 
+avl_node_t *avl_force_node(avl_tree_t *avltree, avl_node_t *newnode) {
+	avl_node_t *node;
+
+	if(!avltree->top)
+		return avl_insert_top(avltree, newnode);
+
+	if(avl_search_closest(avltree, newnode->item, &node) == 1)
+			return avl_insert_after(avltree, node, newnode);
+	else
+			return avl_insert_before(avltree, node, newnode);
+}
+
 /*
  * avl_insert:
  * Create a new node and insert an item there.
