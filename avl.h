@@ -209,9 +209,9 @@ extern unsigned int avl_index(const avl_node_t *);
 
 #endif
 
-#define AVL_CMP_DECLARE(t) extern int avl_cmp_##t(const t, const t);
-#define AVL_CMP_DECLARE_T(t) extern int avl_cmp_##t(const t##_t, const t##_t);
-#define AVL_CMP_DECLARE_NAMED(n,t) extern int avl_cmp_##n(const t, const t);
+#define AVL_CMP_DECLARE(t) extern int avl_##t##_cmp(const t, const t);
+#define AVL_CMP_DECLARE_T(t) extern int avl_##t##_t_cmp(const t##_t, const t##_t);
+#define AVL_CMP_DECLARE_NAMED(n,t) extern int avl_##n##_cmp(const t, const t);
 
 AVL_CMP_DECLARE(float)
 AVL_CMP_DECLARE(double)

@@ -707,9 +707,9 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 	}
 }
 
-#define AVL_CMP_DEFINE(t) int avl_cmp_##t(const t a, const t b) { return AVL_CMP(a,b); }
-#define AVL_CMP_DEFINE_T(t) int avl_cmp_##t(const t##_t a, const t##_t b) { return AVL_CMP(a,b); }
-#define AVL_CMP_DEFINE_NAMED(n,t) int avl_cmp_##n(const t a, const t b) { return AVL_CMP(a,b); }
+#define AVL_CMP_DEFINE(t) int avl_##t##_cmp(const t a, const t b) { return AVL_CMP(a,b); }
+#define AVL_CMP_DEFINE_T(t) int avl_##t##_t_cmp(const t##_t a, const t##_t b) { return AVL_CMP(a,b); }
+#define AVL_CMP_DEFINE_NAMED(n,t) int avl_##n##_cmp(const t a, const t b) { return AVL_CMP(a,b); }
 
 AVL_CMP_DEFINE(float)
 AVL_CMP_DEFINE(double)
