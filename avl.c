@@ -31,14 +31,6 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#ifdef HAVE_C99
-#include <stdint.h>
-#endif
-
-#ifdef HAVE_POSIX
-#include <sys/types.h>
-#endif
-
 #include "avl.h"
 
 static void avl_rebalance(avl_tree_t *, avl_node_t *);
@@ -596,9 +588,9 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 	}
 }
 
-#define AVL_CMP_DEFINE(t) extern int avl_cmp_##t(const t a, const t b) { return AVL_CMP(a,b); }
-#define AVL_CMP_DEFINE_T(t) extern int avl_cmp_##t(const t##_t a, const t##_t b) { return AVL_CMP(a,b); }
-#define AVL_CMP_DEFINE_NAMED(n,t) extern int avl_cmp_##n(const t a, const t b) { return AVL_CMP(a,b); }
+#define AVL_CMP_DEFINE(t) int avl_cmp_##t(const t a, const t b) { return AVL_CMP(a,b); }
+#define AVL_CMP_DEFINE_T(t) int avl_cmp_##t(const t##_t a, const t##_t b) { return AVL_CMP(a,b); }
+#define AVL_CMP_DEFINE_NAMED(n,t) int avl_cmp_##n(const t a, const t b) { return AVL_CMP(a,b); }
 
 AVL_CMP_DEFINE(char)
 AVL_CMP_DEFINE(short)
