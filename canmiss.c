@@ -24,6 +24,10 @@ typedef struct toestand_info {
 	unsigned int mt, ml, mr;
 } toestand_info_t;
 
+typedef struct overtocht_info {
+	unsigned int to, ko, mo;
+} overtocht_info_t;
+
 static unsigned int totaal = 4;
 static unsigned int kannibalen = 2;
 
@@ -65,6 +69,50 @@ static void toestand_info(toestand_info_t *i, unsigned int tl, unsigned int kl) 
 	i->mr = mt - ml;
 }
 
+static bool overtocht_info(overtocht_info_t *oi, const toestand_t *van, const toestand_t *naar) {
+	toestand_info_t ni, vi;
+	unsigned int to, ko, mo;
+
+	toestand_info(&vi, van->totaal, van->kannibalen);
+	toestand_info(&ni, naar->totaal, naar->kannibalen);
+
+	if(!van->bootje == !naar->bootje)
+		return false; /* constraint! */
+
+	if(van->bootje) {
+		if(vi.tr < ni.tr)
+			return false;
+		if(vi.kr < ni.kr)
+			return false;
+		if(vi.mr < ni.mr)
+			return false;
+		to = vi.tr - ni.tr;
+		ko = vi.kr - ni.kr;
+		mo = vi.mr - ni.mr;
+	} else {
+		if(vi.tl < ni.tl)
+			return false;
+		if(vi.kl < ni.kl)
+			return false;
+		if(vi.ml < ni.ml)
+			return false;
+		to = vi.tl - ni.tl;
+		ko = vi.kl - ni.kl;
+		mo = vi.ml - ni.ml;
+	}
+
+	if(to == 0 || to > 2)
+		return false; /* constraint! */
+
+	if(oi) {
+		oi->to = to;
+		oi->ko = ko;
+		oi->mo = mo;
+	}
+
+	return true;
+}
+
 static int toestand_cmp(const toestand_t *a, const toestand_t *b) {
 	return avl_unsigned_int_cmp(b->totaal, a->totaal);
 }
@@ -76,23 +124,53 @@ static void toon_toestand(const toestand_t *t) {
 	toestand_info_t info;
 	toestand_info(&info, t->totaal, t->kannibalen);
 
+	printf("     ");
 	for(i = 0; i < info.kt; i++)
 		putchar(i < info.kl ? 'K' : '_');
 	for(i = 0; i < info.mt; i++)
 		putchar(i < info.ml ? 'M' : '_');
-	putchar(t->bootje ? '<' : '>');
+	if(t->bootje)
+		printf(" ,,,,,,,,, \\__/ ");
+	else
+		printf(" \\__/ ,,,,,,,,, ");
 	for(i = 0; i < info.kt; i++)
 		putchar(i < info.kr ? 'K' : '_');
 	for(i = 0; i < info.mt; i++)
 		putchar(i < info.mr ? 'M' : '_');
+	putchar('\n');
+}
+
+static void toon_overtocht(const toestand_t *van, const toestand_t *naar) {
+	unsigned int i;
+	char *dir;
+	overtocht_info_t oi;
+	overtocht_info(&oi, van, naar);
+
+	dir = van->bootje ? "←" : "→";
+
+	printf("             %s \\", dir);
+		
+	for(i = 0; i < oi.ko; i++)
+		putchar('K');
+	for(; i < oi.to; i++)
+		putchar('M');
+	for(; i < 2; i++)
+		putchar('_');
+
+	printf("/ %s\n", dir);
 }
 
 static void toon_oplossing(const toestand_t *t) {
-	for(; t; t = t->volgende) {
-		printf(" → ");
+	toestand_t *v;
+	for(; t; t = v) {
 		toon_toestand(t);
+		v = t->volgende;
+		if(v) {
+			putchar('\n');
+			toon_overtocht(t, v);
+			putchar('\n');
+		}
 	}
-	printf(" →\n");
 }
 
 static void toon_oplossingen(void) {
@@ -143,41 +221,13 @@ static void bereken_dijkstra(void) {
 static void genereer_overtochten(void) {
 	avl_node_t *node, *doel;
 	toestand_t *t, *dt;
-	unsigned int opvarenden;
-	toestand_info_t ti, dti;
 
 	for(node = toestanden.head; node; node = node->next) {
 		t = node->item;
-		toestand_info(&ti, t->totaal, t->kannibalen);
 		for(doel = toestanden.head; doel; doel = doel->next) {
 			dt = doel->item;
-			toestand_info(&dti, dt->totaal, dt->kannibalen);
-
-			if(!t->bootje == !dt->bootje)
-				continue; /* constraint! */
-
-			if(t->bootje) {
-				if(ti.tr < dti.tr)
-					continue;
-				if(ti.kr < dti.kr)
-					continue;
-				if(ti.mr < dti.mr)
-					continue;
-				opvarenden = ti.tr - dti.tr;
-			} else {
-				if(ti.tl < dti.tl)
-					continue;
-				if(ti.kl < dti.kl)
-					continue;
-				if(ti.ml < dti.ml)
-					continue;
-				opvarenden = ti.tl - dti.tl;
-			}
-
-			if(opvarenden == 0 || opvarenden > 2)
-				continue; /* constraint! */
-
-			avl_item_insert(&t->overtochten, dt);
+			if(overtocht_info(NULL, t, dt))
+				avl_item_insert(&t->overtochten, dt);
 		}
 	}
 }
