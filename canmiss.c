@@ -6,24 +6,30 @@
 
 #include "avl.h"
 
-#define ONEINDIG 10000
+#define ONEINDIG (~0U - 100U)
 
 typedef struct toestand {
 	avl_node_t node;
-	int totaal;
-	int kannibalen;
+	unsigned int totaal;
+	unsigned int kannibalen;
 	bool bootje;
 	avl_tree_t overgangen;
 	struct toestand *volgende;
-	int afstand;
+	unsigned int afstand;
 } toestand_t;
 
-static int totaal = 4;
-static int kannibalen = 2;
+typedef struct toestand_info {
+	unsigned int tt, tl, tr;
+	unsigned int kt, kl, kr;
+	unsigned int mt, ml, mr;
+} toestand_info_t;
+
+static unsigned int totaal = 4;
+static unsigned int kannibalen = 2;
 
 static const toestand_t toestand_0 = {{0}};
 
-static toestand_t *toestand_new(int i, int j, bool b) {
+static toestand_t *toestand_new(unsigned int i, unsigned int j, bool b) {
 	toestand_t *t;
 
 	t = malloc(sizeof *t);
@@ -43,6 +49,22 @@ static toestand_t *toestand_new(int i, int j, bool b) {
 	return t;
 }
 
+static void toestand_info(toestand_info_t *i, unsigned int tl, unsigned int kl) {
+	unsigned int mt, ml;
+
+	i->tt = totaal;
+	i->tl = tl;
+	i->tr = totaal - tl;
+
+	i->kt = kannibalen;
+	i->kl = kl;
+	i->kr = kannibalen - kl;
+
+	i->mt = mt = totaal - kannibalen;
+	i->ml = ml = tl - kl;
+	i->mr = mt - ml;
+}
+
 static int toestand_cmp(const toestand_t *a, const toestand_t *b) {
 	return avl_unsigned_int_cmp(b->totaal, a->totaal);
 }
@@ -50,26 +72,19 @@ static int toestand_cmp(const toestand_t *a, const toestand_t *b) {
 static avl_tree_t toestanden = AVL_TREE_INIT((avl_compare_t)toestand_cmp, NULL);
 
 static void toon_toestand(const toestand_t *t) {
-	int i, missionarissen;
-	int tl, tr, kl, kr, ml, mr;
+	unsigned int i;
+	toestand_info_t info;
+	toestand_info(&info, t->totaal, t->kannibalen);
 
-	missionarissen = totaal - kannibalen;
-	tl = t->totaal;
-	tr = totaal - tl;
-	kl = t->kannibalen;
-	ml = tl - kl;
-	kr = kannibalen - kl;
-	mr = tr - kr;
-
-	for(i = 0; i < kannibalen; i++)
-		putchar(i < kl ? 'K' : '_');
-	for(i = 0; i < missionarissen; i++)
-		putchar(i < ml ? 'M' : '_');
+	for(i = 0; i < info.kt; i++)
+		putchar(i < info.kl ? 'K' : '_');
+	for(i = 0; i < info.mt; i++)
+		putchar(i < info.ml ? 'M' : '_');
 	putchar(t->bootje ? '<' : '>');
-	for(i = 0; i < kannibalen; i++)
-		putchar(i < kr ? 'K' : '_');
-	for(i = 0; i < missionarissen; i++)
-		putchar(i < mr ? 'M' : '_');
+	for(i = 0; i < info.kt; i++)
+		putchar(i < info.kr ? 'K' : '_');
+	for(i = 0; i < info.mt; i++)
+		putchar(i < info.mr ? 'M' : '_');
 }
 
 static void toon_oplossing(const toestand_t *t) {
@@ -100,10 +115,10 @@ static void bereken_dijkstra(void) {
 	for(node = toestanden.tail; node; node = node->prev) {
 		t = node->item;
 
-		if(!t->totaal && t->bootje)
-			t->afstand = 0;
-		else
+		if(t->totaal)
 			t->afstand = ONEINDIG;
+		else
+			t->afstand = 0;
 	}
 
 	do {
@@ -128,23 +143,42 @@ static void bereken_dijkstra(void) {
 static void genereer_overgangen(void) {
 	avl_node_t *node, *doel;
 	toestand_t *t, *dt;
-	int opvarenden;
+	unsigned int opvarenden;
+	toestand_info_t ti, dti;
 
 	for(node = toestanden.head; node; node = node->next) {
 		t = node->item;
+		toestand_info(&ti, t->totaal, t->kannibalen);
 		for(doel = toestanden.head; doel; doel = doel->next) {
 			dt = doel->item;
+			toestand_info(&dti, dt->totaal, dt->kannibalen);
 
 			if(!t->bootje == !dt->bootje)
 				continue; /* constraint! */
 
-			if(t->totaal > dt->totaal)
-				opvarenden = t->totaal - dt->totaal;
-			else
-				opvarenden = dt->totaal - t->totaal;
+			if(t->bootje) {
+				if(ti.tr < dti.tr)
+					continue;
+				if(ti.kr < dti.kr)
+					continue;
+				if(ti.mr < dti.mr)
+					continue;
+				opvarenden = ti.tr - dti.tr;
+			} else {
+				if(ti.tl < dti.tl)
+					continue;
+				if(ti.kl < dti.kl)
+					continue;
+				if(ti.ml < dti.ml)
+					continue;
+				opvarenden = ti.tl - dti.tl;
+			}
 
 			if(opvarenden == 0 || opvarenden > 2)
-				continue;
+				continue; /* constraint! */
+
+			toon_toestand(t); putchar(32);
+			toon_toestand(dt); putchar(10);
 
 			avl_item_insert(&t->overgangen, dt);
 		}
@@ -152,25 +186,25 @@ static void genereer_overgangen(void) {
 }
 
 static void genereer_toestanden(void) {
-	int tl, tr, kl, kr, ml, mr;
+	unsigned int tl, kl;
 	toestand_t *t;
+	toestand_info_t info;
 
-	for(tr = 0; tr <= totaal; tr++) {
-		tl = totaal - tr;
-		for(kr = 0; kr <= kannibalen; kr++) {
-			kl = kannibalen - kr;
-			ml = tl - kl;
-			mr = tr - kr;
-			if(kl > tl || kr > tr || ml > tl || mr > tr)
+	for(tl = 0; tl <= totaal; tl++) {
+		for(kl = 0; kl <= kannibalen; kl++) {
+			toestand_info(&info, tl, kl);
+			if(info.kl > info.tl || info.kr > info.tr)
 				continue; /* logically impossible */
-			if(ml && kl > ml)
+			if(info.ml > info.tl || info.mr > info.tr)
+				continue; /* logically impossible */
+			if(info.ml && info.kl > info.ml)
 				continue; /* constraint! */
-			if(mr && kr > mr)
+			if(info.mr && info.kr > info.mr)
 				continue; /* constraint! */
 			t = toestand_new(tl, kl, false);
-			avl_insert_left(&toestanden, &t->node);
+			avl_insert_somewhere(&toestanden, &t->node);
 			t = toestand_new(tl, kl, true);
-			avl_insert_left(&toestanden, &t->node);
+			avl_insert_somewhere(&toestanden, &t->node);
 		}
 	}
 }
