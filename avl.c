@@ -126,7 +126,7 @@ static avl_node_t *avl_search_leftmost_equal(avl_node_t *node, const void *item,
 			node = node->left;
 			if(!node)
 				return r;
-			if(cmp(item, node))
+			if(cmp(item, node->item))
 				break;
 			r = node;
 		}
@@ -134,7 +134,7 @@ static avl_node_t *avl_search_leftmost_equal(avl_node_t *node, const void *item,
 			node = node->right;
 			if(!node)
 				return r;
-			if(!cmp(item, node))
+			if(!cmp(item, node->item))
 				break;
 		}
 		r = node;
@@ -149,7 +149,7 @@ static avl_node_t *avl_search_rightmost_equal(avl_node_t *node, const void *item
 			node = node->right;
 			if(!node)
 				return r;
-			if(cmp(item, node))
+			if(cmp(item, node->item))
 				break;
 			r = node;
 		}
@@ -157,7 +157,7 @@ static avl_node_t *avl_search_rightmost_equal(avl_node_t *node, const void *item
 			node = node->left;
 			if(!node)
 				return r;
-			if(!cmp(item, node))
+			if(!cmp(item, node->item))
 				break;
 		}
 		r = node;
@@ -186,12 +186,12 @@ int avl_search_left(const avl_tree_t *avltree, const void *item, avl_node_t **av
 			if(node->left)
 				node = node->left;
 			else
-				return *avlnode = NULL, 0;
+				return *avlnode = node, 0;
 		} else if(c > 0) {
 			if(node->right)
 				node = node->right;
 			else
-				return *avlnode = node, 0;
+				return *avlnode = node->next, 0;
 		} else {
 			return *avlnode = avl_search_leftmost_equal(node, item, cmp), 1;
 		}
@@ -217,13 +217,13 @@ int avl_search_right(const avl_tree_t *avltree, const void *item, avl_node_t **a
 		c = cmp(item, node->item);
 
 		if(c < 0) {
-			if(node->right)
-				node = node->right;
-			else
-				return *avlnode = NULL, 0;
-		} else if(c > 0) {
 			if(node->left)
 				node = node->left;
+			else
+				return *avlnode = node->prev, 0;
+		} else if(c > 0) {
+			if(node->right)
+				node = node->right;
 			else
 				return *avlnode = node, 0;
 		} else {
@@ -232,7 +232,7 @@ int avl_search_right(const avl_tree_t *avltree, const void *item, avl_node_t **a
 	}
 }
 
-int avl_search_le(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
+int avl_search_leftish(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
 	avl_node_t *node;
 	avl_compare_t cmp;
 	int c;
@@ -251,13 +251,13 @@ int avl_search_le(const avl_tree_t *avltree, const void *item, avl_node_t **avln
 		c = cmp(item, node->item);
 
 		if(c < 0) {
-			if(node->right)
-				node = node->right;
-			else
-				return *avlnode = NULL, 0;
-		} else if(c > 0) {
 			if(node->left)
 				node = node->left;
+			else
+				return *avlnode = node->prev, 0;
+		} else if(c > 0) {
+			if(node->right)
+				node = node->right;
 			else
 				return *avlnode = node, 0;
 		} else {
@@ -268,33 +268,7 @@ int avl_search_le(const avl_tree_t *avltree, const void *item, avl_node_t **avln
 
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	avl_node_t *node;
-	avl_compare_t cmp;
-	int c;
-
-	node = avltree->top;
-
-	if(!node)
-		return NULL;
-
-	cmp = avltree->cmp;
-
-	for(;;) {
-		c = cmp(item, node->item);
-
-		if(c < 0) {
-			if(node->right)
-				node = node->right;
-			else
-				return NULL;
-		} else if(c > 0) {
-			if(node->left)
-				node = node->left;
-			else
-				return NULL;
-		} else {
-			return node;
-		}
-	}
+	return avl_search_leftish(avltree, item, &node) ? node : NULL;
 }
 
 avl_tree_t *avl_tree_init(avl_tree_t *rc, avl_compare_t cmp, avl_freeitem_t freeitem) {
@@ -332,12 +306,6 @@ void avl_tree_purge(avl_tree_t *avltree) {
 	avl_tree_clear(avltree);
 }
 
-/*
- * avl_tree_free:
- * Free all memory used by this tree.  If freeitem is not NULL, then
- * it is assumed to be a destructor for the items referenced in the avl_
- * tree, and they are deleted as well.
- */
 void avl_tree_free(avl_tree_t *avltree) {
 	avl_tree_purge(avltree);
 	free(avltree);
@@ -354,10 +322,8 @@ static void avl_node_clear(avl_node_t *newnode) {
 }
 
 avl_node_t *avl_node_init(avl_node_t *newnode, void *item) {
-	if(newnode) {
-/*		avl_node_clear(newnode); */
+	if(newnode)
 		newnode->item = item;
-	}
 	return newnode;
 }
 
@@ -423,7 +389,7 @@ avl_node_t *avl_insert_after(avl_tree_t *avltree, avl_node_t *node, avl_node_t *
 avl_node_t *avl_insert(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *node;
 
-	if(avl_search_right(avltree, newnode->item, &node))
+	if(!avl_search_leftish(avltree, newnode->item, &node) || !node)
 		return avl_insert_after(avltree, node, newnode);
 
 	return NULL;
@@ -432,8 +398,8 @@ avl_node_t *avl_insert(avl_tree_t *avltree, avl_node_t *newnode) {
 avl_node_t *avl_insert_somewhere(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *node;
 
-	avl_search_le(avltree, newnode->item, &node);
-	return avl_insert_after(avltree, node, newnode);
+	avl_search_left(avltree, newnode->item, &node);
+	return avl_insert_before(avltree, node, newnode);
 }
 
 avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
@@ -449,12 +415,19 @@ avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
 	return NULL;
 }
 
-/*
- * avl_unlink:
- * Removes the given node.  Does not delete the item at that node.
- * The item of the node may be freed before calling avl_unlink_node.
- * (In other words, it is not referenced by this function.)
- */
+avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, void *item) {
+	avl_node_t *newnode;
+
+	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
+	if(newnode) {
+		if(avl_insert_somewhere(avltree, newnode))
+			return newnode;
+		free(newnode);
+		errno = EEXIST;
+	}
+	return NULL;
+}
+
 void avl_unlink(avl_tree_t *avltree, avl_node_t *avlnode) {
 	avl_node_t *parent;
 	avl_node_t **superparent;

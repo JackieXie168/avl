@@ -119,6 +119,16 @@ extern avl_node_t *avl_node_init(avl_node_t *avlnode, void *item);
  * O(lg n) */
 extern avl_node_t *avl_item_insert(avl_tree_t *, void *item);
 
+/* Insert an item into the tree and return the new node.
+ * Returns NULL and sets errno if memory for the new node could not be
+ * allocated.
+ * O(lg n) */
+extern avl_node_t *avl_item_insert_somewhere(avl_tree_t *, void *item);
+
+/* Insert a node into the tree and return it.
+ * O(lg n) */
+extern avl_node_t *avl_insert_somewhere(avl_tree_t *, avl_node_t *);
+
 /* Insert a node into the tree and return it.
  * Returns NULL if the node is already in the tree.
  * O(lg n) */

@@ -27,38 +27,6 @@
 #include <unistd.h>
 #include "avl.h"
 
-static int depth(avl_node_t *n) {
-	int d;
-	for(d = 0; n; n = n->parent)
-		d++;
-	return d;
-}
-
-static void dumpnode(avl_node_t *n) {
-	int d;
-	if(!n)
-		return;
-	d = depth(n);
-	while(d--)
-		printf("  ");
-	if(n->item)
-		printf("<node>%s</node>\n", (char *)n->item);
-	else
-		printf("<node/>\n");
-	dumpnode(n->left);
-	dumpnode(n->right);
-}
-
-static void dumptree(avl_tree_t *t) {
-	if(t->top) {
-		puts("<boom>");
-		dumpnode(t->top);
-		puts("</boom>");
-	} else {
-		puts("<boom/>");
-	}
-}
-
 static void readinto(avl_tree_t *t, char *fname) {
 	FILE *f;
 	char *s, *e;
@@ -70,21 +38,25 @@ static void readinto(avl_tree_t *t, char *fname) {
 		exit(1);
 	}
 
-	while((e = s = malloc(65536)) && fgets(s, 65536, f)) {
+	for(;;) {
+		s = malloc(65536);
+		if(!s) {
+			perror("malloc()");
+			exit(2);
+		}
+		if(!fgets(s, 65536, f)) {
+			free(s);
+			break;
+		}
 		len = strlen(s);
 		if(s[len-1] == '\n')
 			s[len-1] = '\0';
 		else
 			len++;
-		e = s = realloc(s, len);
-		if(!s)
-			break;
-		avl_item_insert(t, s);
-		dumptree(t);
-	}
-	if(!e) {
-		perror("malloc()");
-		exit(2);
+		e = realloc(s, len);
+		if(e)
+			s = e;
+		avl_item_insert_somewhere(t, s);
 	}
 	fclose(f);
 }
