@@ -176,12 +176,7 @@ static void genereer_overgangen(void) {
 
 			if(opvarenden == 0 || opvarenden > 2)
 				continue; /* constraint! */
-#ifdef DEBUG
-			toon_toestand(t);
-			printf(" → ");
-			toon_toestand(dt);
-			printf("\n");
-#endif
+
 			avl_item_insert(&t->overgangen, dt);
 		}
 	}
@@ -195,14 +190,17 @@ static void genereer_toestanden(void) {
 	for(tl = 0; tl <= totaal; tl++) {
 		for(kl = 0; kl <= kannibalen; kl++) {
 			toestand_info(&info, tl, kl);
+
 			if(info.kl > info.tl || info.kr > info.tr)
 				continue; /* logically impossible */
 			if(info.ml > info.tl || info.mr > info.tr)
 				continue; /* logically impossible */
+
 			if(info.ml && info.kl > info.ml)
 				continue; /* constraint! */
 			if(info.mr && info.kr > info.mr)
 				continue; /* constraint! */
+
 			t = toestand_new(tl, kl, false);
 			avl_insert_somewhere(&toestanden, &t->node);
 			t = toestand_new(tl, kl, true);
