@@ -3,7 +3,7 @@
     avlsort.c - Example program for the AVL-tree library.
 
     Copyright (C) 1998  Michael H. Buselli <cosine@cosine.org>
-    Copyright (C) 2000-2002  Wessel Dankers <wsl@nl.linux.org>
+    Copyright (C) 2000-2005  Wessel Dankers <wsl@nl.linux.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -29,22 +29,6 @@
 #include <sys/mman.h>
 
 #include "avl.h"
-
-void avl_insert_always(avl_tree_t *avltree, void *item) {
-	avl_node_t *newnode, *node;
-
-	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
-	if(newnode) {
-		switch(avl_search_closest(avltree, newnode->item, &node)) {
-			case -1:
-				avl_insert_before(avltree, node, newnode);
-				return;
-			case 0:
-			case 1:
-				avl_insert_after(avltree, node, newnode);
-		}
-	}
-}
 
 int main(int argc, char **argv) {
 	avl_tree_t *t;
@@ -125,7 +109,7 @@ int main(int argc, char **argv) {
 	for(n = s = bb; s<eb; s = n) {
 		n = strchr(n, '\n');
 		*n++ = '\0';
-		avl_insert_always(t, s);
+		avl_item_insert_somewhere(t, s);
 		l++;
 	}
 	fprintf(stderr, "Inserted %d lines\n", l);
@@ -138,7 +122,7 @@ int main(int argc, char **argv) {
 	fprintf(stderr, "Wrote %d lines, depth %d\n", l, t->top?t->top->depth:0);
 
 	for(; l; l--)
-		avl_delete_node(t, t->top);
+		avl_delete(t, t->top);
 	if(!t->top) fprintf(stderr, "Deleted all lines\n");
 
 	avl_tree_purge(t);
