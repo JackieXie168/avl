@@ -29,9 +29,6 @@ $URL$
 	- create avl_types.h for stuff from <sys/types.h>, <unistd.h> etc:
 		size_t, ssize_t, socklen_t, timeval, timespec, ...
 
-- rename avl_init_$foo to avl_$foo_init
-	- ditto for alloc, insert, delete, etc.
-
 - never crash on passed NULL pointers
 
 - static initializers for trees and nodes
