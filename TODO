@@ -1,14 +1,14 @@
 $Id$
 $URL$
 
-- create avl_search_closest_smallest:
+- create avl_search_left:
 	- TRUE:
-		if(n) exact match: lastmost equal element returned;
+		if(n) exact match: leftmost equal element returned;
 		else tree is empty;
 	- FALSE:
-		if(n) no exact match: first smaller element returned;
+		if(n) no exact match: rightmost smaller element returned;
 		else there is no smaller element than what you looked for
-	and ditto avl_search_closest_greatest
+	and ditto avl_search_right
 
 - create insert functions for these new search functions
 
