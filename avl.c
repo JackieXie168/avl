@@ -30,6 +30,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+
+#ifdef HAVE_C99
+#include <stdint.h>
+#endif
+
+#ifdef HAVE_POSIX
+#include <sys/types.h>
+#endif
+
 #include "avl.h"
 
 static void avl_rebalance(avl_tree_t *, avl_node_t *);
@@ -586,3 +595,60 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 		avlnode = parent;
 	}
 }
+
+#define AVL_CMP_DEFINE(t) extern int avl_cmp_##t(const t a, const t b) { return AVL_CMP(a,b); }
+#define AVL_CMP_DEFINE_T(t) extern int avl_cmp_##t(const t##_t a, const t##_t b) { return AVL_CMP(a,b); }
+#define AVL_CMP_DEFINE_NAMED(n,t) extern int avl_cmp_##n(const t a, const t b) { return AVL_CMP(a,b); }
+
+AVL_CMP_DEFINE(char)
+AVL_CMP_DEFINE(short)
+AVL_CMP_DEFINE(int)
+AVL_CMP_DEFINE(long)
+
+AVL_CMP_DEFINE_NAMED(unsigned_char, unsigned char)
+AVL_CMP_DEFINE_NAMED(unsigned_short, unsigned short)
+AVL_CMP_DEFINE_NAMED(unsigned_int, unsigned int)
+AVL_CMP_DEFINE_NAMED(unsigned_long, unsigned long)
+
+AVL_CMP_DEFINE_NAMED(pointer, void *)
+
+#ifdef __GNUC__
+__extension__
+AVL_CMP_DEFINE_NAMED(long_long, long long)
+__extension__
+AVL_CMP_DEFINE_NAMED(unsigned_long_long, unsigned long long)
+#endif
+
+#ifdef HAVE_C99
+AVL_CMP_DEFINE_T(int8)
+AVL_CMP_DEFINE_T(uint8)
+AVL_CMP_DEFINE_T(int16)
+AVL_CMP_DEFINE_T(uint16)
+AVL_CMP_DEFINE_T(int32)
+AVL_CMP_DEFINE_T(uint32)
+AVL_CMP_DEFINE_T(int64)
+AVL_CMP_DEFINE_T(uint64)
+
+AVL_CMP_DEFINE_T(int_fast8)
+AVL_CMP_DEFINE_T(uint_fast8)
+AVL_CMP_DEFINE_T(int_fast16)
+AVL_CMP_DEFINE_T(uint_fast16)
+AVL_CMP_DEFINE_T(int_fast32)
+AVL_CMP_DEFINE_T(uint_fast32)
+AVL_CMP_DEFINE_T(int_fast64)
+AVL_CMP_DEFINE_T(uint_fast64)
+
+AVL_CMP_DEFINE_T(int_least8)
+AVL_CMP_DEFINE_T(uint_least8)
+AVL_CMP_DEFINE_T(int_least16)
+AVL_CMP_DEFINE_T(uint_least16)
+AVL_CMP_DEFINE_T(int_least32)
+AVL_CMP_DEFINE_T(uint_least32)
+AVL_CMP_DEFINE_T(int_least64)
+AVL_CMP_DEFINE_T(uint_least64)
+#endif
+
+#ifdef HAVE_POSIX
+AVL_CMP_DEFINE_T(size)
+AVL_CMP_DEFINE_T(ssize)
+#endif

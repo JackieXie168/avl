@@ -12,6 +12,7 @@ CC=gcc-4.0
 #CFLAGS = -O6 -fomit-frame-pointer -pipe -march=i586 -Wall -ansi -pedantic
 CFLAGS = -g -pg -pipe -march=i586 -Wall -Werror -ansi -pedantic
 CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mcpu=i686 -w
+CFLAGS += -DHAVE_C99 -DHAVE_POSIX
 #LDFLAGS = -s
 
 prefix ?= /usr/local
@@ -20,7 +21,7 @@ libdir ?= $(prefix)/lib
 includedir ?= /usr/include
 
 PROGRAMS = avlsort setdiff
-LIBAVL = libavl.so.1.6
+LIBAVL = libavl.so.2.0
 LIBRARIES = $(LIBAVL)
 
 all: $(LIBAVL)

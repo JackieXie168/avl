@@ -49,6 +49,8 @@ typedef int (*avl_compare_t)(const void *, const void *);
  */
 typedef void (*avl_freeitem_t)(void *);
 
+#define AVL_CMP(a,b) ((a) < (b) ? -1 : (a) > (b) ? 1 : 0)
+
 typedef struct avl_node_t {
 	struct avl_node_t *next;
 	struct avl_node_t *prev;
