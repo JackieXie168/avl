@@ -13,7 +13,7 @@ typedef struct toestand {
 	unsigned int totaal;
 	unsigned int kannibalen;
 	bool bootje;
-	avl_tree_t overgangen;
+	avl_tree_t overtochten;
 	struct toestand *volgende;
 	unsigned int afstand;
 } toestand_t;
@@ -44,7 +44,7 @@ static toestand_t *toestand_new(unsigned int i, unsigned int j, bool b) {
 	t->bootje = b;
 
 	avl_node_init(&t->node, t);
-	avl_tree_init(&t->overgangen, (avl_compare_t)avl_pointer_cmp, NULL);
+	avl_tree_init(&t->overtochten, (avl_compare_t)avl_pointer_cmp, NULL);
 
 	return t;
 }
@@ -127,7 +127,7 @@ static void bereken_dijkstra(void) {
 		for(node = toestanden.head; node; node = node->next) {
 			t = node->item;
 
-			for(doel = t->overgangen.head; doel; doel = doel->next) {
+			for(doel = t->overtochten.head; doel; doel = doel->next) {
 				dt = doel->item;
 
 				if(dt->afstand + 1 < t->afstand) {
@@ -140,7 +140,7 @@ static void bereken_dijkstra(void) {
 	} while(veranderd);
 }
 
-static void genereer_overgangen(void) {
+static void genereer_overtochten(void) {
 	avl_node_t *node, *doel;
 	toestand_t *t, *dt;
 	unsigned int opvarenden;
@@ -177,7 +177,7 @@ static void genereer_overgangen(void) {
 			if(opvarenden == 0 || opvarenden > 2)
 				continue; /* constraint! */
 
-			avl_item_insert(&t->overgangen, dt);
+			avl_item_insert(&t->overtochten, dt);
 		}
 	}
 }
@@ -211,7 +211,7 @@ static void genereer_toestanden(void) {
 
 int main(void) {
 	genereer_toestanden();
-	genereer_overgangen();
+	genereer_overtochten();
 	bereken_dijkstra();
 	toon_oplossingen();
 	return 0;
