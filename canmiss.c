@@ -11,7 +11,7 @@ typedef struct toestand {
 	unsigned int totaal;
 	unsigned int kannibalen;
 	bool bootje;
-	avl_tree_t kanten;
+	avl_tree_t overgangen;
 	avl_node_t *terug;
 	unsigned int afstand;
 } toestand_t;
@@ -35,7 +35,8 @@ static toestand_t *toestand_new(unsigned int i, unsigned int j, bool b) {
 	t->kannibalen = i;
 	t->bootje = b;
 
-	avl_tree_init(&t->kanten, (avl_compare_t)avl_pointer_cmp, NULL);
+	avl_node_init(&t->node, t);
+	avl_tree_init(&t->overgangen, (avl_compare_t)avl_pointer_cmp, NULL);
 	t->afstand = ~0U;
 
 	return t;
@@ -48,18 +49,21 @@ static int toestand_cmp(const toestand_t *a, const toestand_t *b) {
 static avl_tree_t toestanden = AVL_TREE_INIT((avl_compare_t)toestand_cmp, NULL);
 
 static void genereer_toestanden(void) {
-	int i, j;
+	int tl, kl, kr, ml, mr;
 	toestand_t *t;
 
-	for(i = 0; i <= totaal; i++) {
-		for(j = 0; j <= kannibalen && j <= i; j++) {
-			if(j > i - j) /* teveel kannibalen links */
+	for(tl = 0; tl <= totaal; tl++) {
+		for(kl = 0; kl <= kannibalen && kl <= tl; kl++) {
+			ml = tl - kl;
+			kr = kannibalen - kl;
+			mr = totaal - tl - kr;
+			
+			if(kl > ml || kr > mr)
 				continue;
-			if(kannibalen - j > totaal - kannibalen - i + j) /* idem rechts */
-				continue;
-			t = toestand_new(i, j, false);
+
+			t = toestand_new(tl, kl, false);
 			avl_insert_right(&toestanden, &t->node);
-			t = toestand_new(i, j, true);
+			t = toestand_new(tl, kl, true);
 			avl_insert_right(&toestanden, &t->node);
 		}
 	}

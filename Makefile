@@ -8,19 +8,20 @@ LDCONFIG ?= /sbin/ldconfig
 # Some suggestions: (-mcpu= generates i386 compatible code)
 CC=gcc-4.0
 #CFLAGS = -O2 -fomit-frame-pointer -pipe -march=i586 -Wall -g
-#CFLAGS = -O6 -fomit-frame-pointer -pipe -march=i586 -Wall -ansi -pedantic
-#CFLAGS = -O6 -fomit-frame-pointer -pipe -march=i586 -Wall -ansi -pedantic
-CFLAGS = -g -pg -pipe -march=i586 -Wall -Werror -ansi -pedantic
-CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mcpu=i686 -w
-CFLAGS += -DHAVE_C99 -DHAVE_POSIX
+CFLAGS = -g -pg -O6 -pipe -march=athlon-xp -Wall -Werror -ansi -pedantic
+#CFLAGS = -O6 -fomit-frame-pointer -pipe -march=athlon-xp -Wall -ansi -pedantic
 #LDFLAGS = -s
+LDFLAGS = -g -pg
+
+CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mtune=i686 -w
+CFLAGS += -DHAVE_C99 -DHAVE_POSIX
 
 prefix ?= /usr/local
 libdir ?= $(prefix)/lib
 #includedir ?= $(prefix)/include
 includedir ?= /usr/include
 
-PROGRAMS = avlsort setdiff
+PROGRAMS = avlsort setdiff canmiss
 LIBAVL = libavl.so.2.0
 LIBRARIES = $(LIBAVL)
 
