@@ -118,47 +118,8 @@ unsigned int avl_index(const avl_node_t *avlnode) {
 }
 #endif
 
-int avl_search_closest(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
-	avl_node_t *node;
-	avl_compare_t cmp;
-	int c;
-
-	if(!avlnode)
-		avlnode = &node;
-
-	node = avltree->top;
-
-	if(!node)
-		return *avlnode = NULL, 0;
-
-	cmp = avltree->cmp;
-
-	for(;;) {
-		c = cmp(item, node->item);
-
-		if(c < 0) {
-			if(node->left)
-				node = node->left;
-			else
-				return *avlnode = node, -1;
-		} else if(c > 0) {
-			if(node->right)
-				node = node->right;
-			else
-				return *avlnode = node, 1;
-		} else {
-			return *avlnode = node, 0;
-		}
-	}
-}
-
-static avl_node_t *avl_search_leftmost(const avl_tree_t *avltree, avl_node_t *node) {
+static avl_node_t *avl_search_leftmost_equal(avl_node_t *node, const void *item, avl_compare_t cmp) {
 	avl_node_t *r = node;
-	avl_compare_t cmp;
-	const void *item;
-
-	cmp = avltree->cmp;
-	item = node->item;
 
 	for(;;) {
 		for(;;) {
@@ -180,13 +141,8 @@ static avl_node_t *avl_search_leftmost(const avl_tree_t *avltree, avl_node_t *no
 	}
 }
 
-static avl_node_t *avl_search_rightmost(const avl_tree_t *avltree, avl_node_t *node) {
+static avl_node_t *avl_search_rightmost_equal(avl_node_t *node, const void *item, avl_compare_t cmp) {
 	avl_node_t *r = node;
-	avl_compare_t cmp;
-	const void *item;
-
-	cmp = avltree->cmp;
-	item = node->item;
 
 	for(;;) {
 		for(;;) {
@@ -235,9 +191,9 @@ int avl_search_left(const avl_tree_t *avltree, const void *item, avl_node_t **av
 			if(node->right)
 				node = node->right;
 			else
-				return *avlnode = avl_search_rightmost(avltree, node), 0;
+				return *avlnode = avl_search_rightmost_equal(node, item, cmp), 0;
 		} else {
-			return *avlnode = avl_search_leftmost(avltree, node), 1;
+			return *avlnode = avl_search_leftmost_equal(node, item, cmp), 1;
 		}
 	}
 }
