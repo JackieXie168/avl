@@ -77,7 +77,7 @@ typedef struct avl_node_t {
 	struct avl_node_t *right;
 	void *item;
 #ifdef AVL_COUNT
-	unsigned int count;
+	unsigned long count;
 #endif
 #ifdef AVL_DEPTH
 	unsigned char depth;
@@ -265,16 +265,16 @@ extern avl_node_t *avl_search(const avl_tree_t *, const void *item);
 #ifdef AVL_COUNT
 /* Returns the number of nodes in the tree.
  * O(1) */
-extern unsigned int avl_count(const avl_tree_t *);
+extern unsigned long avl_count(const avl_tree_t *);
 
 /* Searches a node by its rank in the list. Counting starts at 0.
  * Returns NULL if the index exceeds the number of nodes in the tree.
  * O(lg n) */
-extern avl_node_t *avl_at(const avl_tree_t *, unsigned int);
+extern avl_node_t *avl_at(const avl_tree_t *, unsigned long);
 
 /* Returns the rank of a node in the list. Counting starts at 0.
  * O(lg n) */
-extern unsigned int avl_index(const avl_node_t *);
+extern unsigned long avl_index(const avl_node_t *);
 #endif
 
 #endif

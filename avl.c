@@ -80,13 +80,18 @@ static int avl_check_balance(avl_node_t *avlnode) {
 }
 
 #ifdef AVL_COUNT
-unsigned int avl_count(const avl_tree_t *avltree) {
+unsigned long avl_count(const avl_tree_t *avltree) {
+	if(!avltree)
+		return 0;
 	return NODE_COUNT(avltree->top);
 }
 
-avl_node_t *avl_at(const avl_tree_t *avltree, unsigned int index) {
+avl_node_t *avl_at(const avl_tree_t *avltree, unsigned long index) {
 	avl_node_t *avlnode;
-	unsigned int c;
+	unsigned long c;
+
+	if(!avltree)
+		return NULL;
 
 	avlnode = avltree->top;
 
@@ -105,9 +110,12 @@ avl_node_t *avl_at(const avl_tree_t *avltree, unsigned int index) {
 	return NULL;
 }
 
-unsigned int avl_index(const avl_node_t *avlnode) {
+unsigned long avl_index(const avl_node_t *avlnode) {
 	avl_node_t *next;
-	unsigned int c;
+	unsigned long c;
+
+	if(!avlnode)
+		return 0;
 
 	c = L_COUNT(avlnode);
 
@@ -175,6 +183,9 @@ avl_node_t *avl_search_left(const avl_tree_t *avltree, const void *item, int *ex
 	if(!exact)
 		exact = &c;
 
+	if(!avltree)
+		return *exact = 0, NULL;
+
 	node = avltree->top;
 
 	if(!node)
@@ -208,6 +219,9 @@ avl_node_t *avl_search_right(const avl_tree_t *avltree, const void *item, int *e
 
 	if(!exact)
 		exact = &c;
+
+	if(!avltree)
+		return *exact = 0, NULL;
 
 	node = avltree->top;
 
@@ -244,6 +258,9 @@ avl_node_t *avl_search_rightish(const avl_tree_t *avltree, const void *item, int
 	if(!exact)
 		exact = &c;
 
+	if(!avltree)
+		return *exact = 0, NULL;
+
 	node = avltree->top;
 
 	if(!node)
@@ -278,15 +295,15 @@ avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	return c ? n : NULL;
 }
 
-avl_tree_t *avl_tree_init(avl_tree_t *rc, avl_compare_t cmp, avl_freeitem_t freeitem) {
-	if(rc) {
-		rc->head = NULL;
-		rc->tail = NULL;
-		rc->top = NULL;
-		rc->cmp = cmp;
-		rc->freeitem = freeitem;
+avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_compare_t cmp, avl_freeitem_t freeitem) {
+	if(avltree) {
+		avltree->head = NULL;
+		avltree->tail = NULL;
+		avltree->top = NULL;
+		avltree->cmp = cmp;
+		avltree->freeitem = freeitem;
 	}
-	return rc;
+	return avltree;
 }
 
 avl_tree_t *avl_tree_alloc(avl_compare_t cmp, avl_freeitem_t freeitem) {
@@ -294,12 +311,16 @@ avl_tree_t *avl_tree_alloc(avl_compare_t cmp, avl_freeitem_t freeitem) {
 }
 
 void avl_tree_clear(avl_tree_t *avltree) {
-	avltree->top = avltree->head = avltree->tail = NULL;
+	if(avltree)
+		avltree->top = avltree->head = avltree->tail = NULL;
 }
 
 void avl_tree_purge(avl_tree_t *avltree) {
 	avl_node_t *node, *next;
 	avl_freeitem_t freeitem;
+
+	if(!avltree)
+		return;
 
 	freeitem = avltree->freeitem;
 
@@ -314,6 +335,8 @@ void avl_tree_purge(avl_tree_t *avltree) {
 }
 
 void avl_tree_free(avl_tree_t *avltree) {
+	if(!avltree)
+		return;
 	avl_tree_purge(avltree);
 	free(avltree);
 }
@@ -346,6 +369,9 @@ static avl_node_t *avl_insert_top(avl_tree_t *avltree, avl_node_t *newnode) {
 }
 
 avl_node_t *avl_insert_before(avl_tree_t *avltree, avl_node_t *node, avl_node_t *newnode) {
+	if(!avltree || !newnode)
+		return NULL;
+
 	if(!node)
 		return avltree->tail
 			? avl_insert_after(avltree, avltree->tail, newnode)
@@ -372,6 +398,9 @@ avl_node_t *avl_insert_before(avl_tree_t *avltree, avl_node_t *node, avl_node_t 
 }
 
 avl_node_t *avl_insert_after(avl_tree_t *avltree, avl_node_t *node, avl_node_t *newnode) {
+	if(!avltree || !newnode)
+		return NULL;
+
 	if(!node)
 		return avltree->head
 			? avl_insert_before(avltree, avltree->head, newnode)
@@ -420,6 +449,9 @@ avl_node_t *avl_insert_somewhere(avl_tree_t *avltree, avl_node_t *newnode) {
 avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
 
+	if(!avltree)
+		return errno = EFAULT, NULL;
+
 	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
 	if(newnode) {
 		if(avl_insert(avltree, newnode))
@@ -433,6 +465,9 @@ avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
 avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
 
+	if(!avltree)
+		return errno = EFAULT, NULL;
+
 	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
 	if(newnode)
 		return avl_insert_somewhere(avltree, newnode);
@@ -441,6 +476,9 @@ avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, void *item) {
 
 avl_node_t *avl_item_insert_before(avl_tree_t *avltree, avl_node_t *node, void *item) {
 	avl_node_t *newnode;
+
+	if(!avltree)
+		return errno = EFAULT, NULL;
 
 	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
 	if(newnode)
@@ -451,6 +489,9 @@ avl_node_t *avl_item_insert_before(avl_tree_t *avltree, avl_node_t *node, void *
 avl_node_t *avl_item_insert_after(avl_tree_t *avltree, avl_node_t *node, void *item) {
 	avl_node_t *newnode;
 
+	if(!avltree)
+		return errno = EFAULT, NULL;
+
 	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
 	if(newnode)
 		return avl_insert_after(avltree, node, newnode);
@@ -460,6 +501,9 @@ avl_node_t *avl_item_insert_after(avl_tree_t *avltree, avl_node_t *node, void *i
 avl_node_t *avl_item_insert_left(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
 
+	if(!avltree)
+		return errno = EFAULT, NULL;
+
 	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
 	if(newnode)
 		return avl_insert_left(avltree, newnode);
@@ -468,6 +512,9 @@ avl_node_t *avl_item_insert_left(avl_tree_t *avltree, void *item) {
 
 avl_node_t *avl_item_insert_right(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
+
+	if(!avltree)
+		return errno = EFAULT, NULL;
 
 	newnode = avl_node_init(malloc(sizeof(avl_node_t)), item);
 	if(newnode)
@@ -480,6 +527,9 @@ void avl_unlink(avl_tree_t *avltree, avl_node_t *avlnode) {
 	avl_node_t **superparent;
 	avl_node_t *subst, *left, *right;
 	avl_node_t *balnode;
+
+	if(!avltree || !avlnode)
+		return;
 
 	if(avlnode->prev)
 		avlnode->prev->next = avlnode->next;
