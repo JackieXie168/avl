@@ -27,14 +27,39 @@
 #include <unistd.h>
 #include "avl.h"
 
-int depth(avl_node_t *n) {
+static int depth(avl_node_t *n) {
 	int d;
 	for(d = 0; n; n = n->parent)
 		d++;
 	return d;
 }
 
-void readinto(avl_tree_t *t, char *fname) {
+static void dumpnode(avl_node_t *n) {
+	int d;
+	if(!n)
+		return;
+	d = depth(n);
+	while(d--)
+		printf("  ");
+	if(n->item)
+		printf("<node>%s</node>\n", (char *)n->item);
+	else
+		printf("<node/>\n");
+	dumpnode(n->left);
+	dumpnode(n->right);
+}
+
+static void dumptree(avl_tree_t *t) {
+	if(t->top) {
+		puts("<boom>");
+		dumpnode(t->top);
+		puts("</boom>");
+	} else {
+		puts("<boom/>");
+	}
+}
+
+static void readinto(avl_tree_t *t, char *fname) {
 	FILE *f;
 	char *s, *e;
 	int len;
@@ -55,6 +80,7 @@ void readinto(avl_tree_t *t, char *fname) {
 		if(!s)
 			break;
 		avl_item_insert(t, s);
+		dumptree(t);
 	}
 	if(!e) {
 		perror("malloc()");
