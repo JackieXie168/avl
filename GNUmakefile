@@ -46,8 +46,8 @@ install: all
 	$(INSTALL) -d $(DESTDIR)$(libdir)
 	$(INSTALL) -m 644 $(LIBRARIES) $(DESTDIR)$(libdir)
 	for i in $(LIBRARIES); do\
-		$(LN) -sf $$i $(DESTDIR)$(libdir)/$${i%.*};\
-		$(LN) -sf $${i%.*} $(DESTDIR)$(libdir)/$${i%.*.*};\
+		ln -sf $$i $(DESTDIR)$(libdir)/$${i%.*};\
+		ln -sf $${i%.*} $(DESTDIR)$(libdir)/$${i%.*.*};\
 	done
 	#-$(LDCONFIG)
 
