@@ -179,13 +179,12 @@ extern void *avl_item_delete(avl_tree_t *, const void *item);
 extern avl_node_t *avl_fixup(avl_tree_t *, avl_node_t *new);
 
 /* Searches for a node with the key closest (or equal) to the given item.
- * If avlnode is not NULL, *avlnode will be set to the node found or NULL
- * if the tree is empty. Return values:
- *   -1  if the returned node is smaller
- *    0  if the returned node is equal or if the tree is empty
- *    1  if the returned node is greater
+ * If exact is not NULL, *exact will be set to:
+ *    0  if the returned node is smaller or if the tree is empty
+ *    1  if the returned node is equal
+ * Returns NULL if no equal or smaller element could be found.
  * O(lg n) */
-extern int avl_search_closest(const avl_tree_t *, const void *item, avl_node_t **avlnode);
+extern avl_node_t *avl_search_rightish(const avl_tree_t *, const void *item, int *exact);
 
 /* Searches for the item in the tree and returns a matching node if found
  * or NULL if not.

@@ -164,18 +164,18 @@ static avl_node_t *avl_search_rightmost_equal(avl_node_t *node, const void *item
 	}
 }
 
-int avl_search_left(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
+avl_node_t *avl_search_left(const avl_tree_t *avltree, const void *item, int *exact) {
 	avl_node_t *node;
 	avl_compare_t cmp;
 	int c;
 
-	if(!avlnode)
-		avlnode = &node;
+	if(!exact)
+		exact = &c;
 
 	node = avltree->top;
 
 	if(!node)
-		return *avlnode = NULL, 1;
+		return *exact = 0, NULL;
 
 	cmp = avltree->cmp;
 
@@ -186,30 +186,30 @@ int avl_search_left(const avl_tree_t *avltree, const void *item, avl_node_t **av
 			if(node->left)
 				node = node->left;
 			else
-				return *avlnode = node, 0;
+				return *exact = 0, node;
 		} else if(c > 0) {
 			if(node->right)
 				node = node->right;
 			else
-				return *avlnode = node->next, 0;
+				return *exact = 0, node->next;
 		} else {
-			return *avlnode = avl_search_leftmost_equal(node, item, cmp), 1;
+			return *exact = 1, avl_search_leftmost_equal(node, item, cmp);
 		}
 	}
 }
 
-int avl_search_right(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
+avl_node_t *avl_search_right(const avl_tree_t *avltree, const void *item, int *exact) {
 	avl_node_t *node;
 	avl_compare_t cmp;
 	int c;
 
-	if(!avlnode)
-		avlnode = &node;
+	if(!exact)
+		exact = &c;
 
 	node = avltree->top;
 
 	if(!node)
-		return *avlnode = NULL, 1;
+		return *exact = 0, NULL;
 
 	cmp = avltree->cmp;
 
@@ -220,30 +220,31 @@ int avl_search_right(const avl_tree_t *avltree, const void *item, avl_node_t **a
 			if(node->left)
 				node = node->left;
 			else
-				return *avlnode = node->prev, 0;
+				return *exact = 0, node;
 		} else if(c > 0) {
 			if(node->right)
 				node = node->right;
 			else
-				return *avlnode = node, 0;
+				return *exact = 0, node;
 		} else {
-			return *avlnode = avl_search_rightmost_equal(node, item, cmp), 1;
+			return *exact = 1, avl_search_rightmost_equal(node, item, cmp);
 		}
 	}
 }
 
-int avl_search_rightish(const avl_tree_t *avltree, const void *item, avl_node_t **avlnode) {
+
+avl_node_t *avl_search_rightish(const avl_tree_t *avltree, const void *item, int *exact) {
 	avl_node_t *node;
 	avl_compare_t cmp;
 	int c;
 
-	if(!avlnode)
-		avlnode = &node;
+	if(!exact)
+		exact = &c;
 
 	node = avltree->top;
 
 	if(!node)
-		return *avlnode = NULL, 1;
+		return *exact = 0, NULL;
 
 	cmp = avltree->cmp;
 
@@ -254,21 +255,24 @@ int avl_search_rightish(const avl_tree_t *avltree, const void *item, avl_node_t 
 			if(node->left)
 				node = node->left;
 			else
-				return *avlnode = node->prev, 0;
+				return *exact = 0, node;
 		} else if(c > 0) {
 			if(node->right)
 				node = node->right;
 			else
-				return *avlnode = node, 0;
+				return *exact = 0, node;
 		} else {
-			return *avlnode = node, 1;
+			return *exact = 1, node;
 		}
 	}
 }
+
 
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
-	avl_node_t *node;
-	return avl_search_rightish(avltree, item, &node) ? node : NULL;
+	int c;
+	avl_node_t *n;
+	n = avl_search_rightish(avltree, item, &c);
+	return c ? n : NULL;
 }
 
 avl_tree_t *avl_tree_init(avl_tree_t *rc, avl_compare_t cmp, avl_freeitem_t freeitem) {
@@ -388,32 +392,22 @@ avl_node_t *avl_insert_after(avl_tree_t *avltree, avl_node_t *node, avl_node_t *
 
 avl_node_t *avl_insert(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *node;
+	int c;
 
-	if(!avl_search_rightish(avltree, newnode->item, &node) || !node)
-		return avl_insert_after(avltree, node, newnode);
-
-	return NULL;
+	node = avl_search_rightish(avltree, newnode->item, &c);
+	return c ? NULL : avl_insert_after(avltree, node, newnode);
 }
 
 avl_node_t *avl_insert_left(avl_tree_t *avltree, avl_node_t *newnode) {
-	avl_node_t *node;
-
-	avl_search_left(avltree, newnode->item, &node);
-	return avl_insert_before(avltree, node, newnode);
+	return avl_insert_before(avltree, avl_search_left(avltree, newnode->item, NULL), newnode);
 }
 
 avl_node_t *avl_insert_right(avl_tree_t *avltree, avl_node_t *newnode) {
-	avl_node_t *node;
-
-	avl_search_right(avltree, newnode->item, &node);
-	return avl_insert_after(avltree, node, newnode);
+	return avl_insert_after(avltree, avl_search_right(avltree, newnode->item, NULL), newnode);
 }
 
 avl_node_t *avl_insert_somewhere(avl_tree_t *avltree, avl_node_t *newnode) {
-	avl_node_t *node;
-
-	avl_search_rightish(avltree, newnode->item, &node);
-	return avl_insert_after(avltree, node, newnode);
+	return avl_insert_after(avltree, avl_search_rightish(avltree, newnode->item, NULL), newnode);
 }
 
 avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
