@@ -1,0 +1,37 @@
+$Id$
+$URL$
+
+- make avl_search_closest_smaller, returning only TRUE or FALSE:
+	- TRUE:
+		if(n) some exact match;
+		else tree is empty;
+	- FALSE:
+		if(n) no exact match: first smaller element returned;
+		else there is no smaller element than what you looked for
+	and ditto avl_search_closest_greater
+
+- create avl_search_closest_smallest:
+	- TRUE:
+		if(n) exact match: lastmost equal element returned;
+		else tree is empty;
+	- FALSE:
+		if(n) no exact match: first smaller element returned;
+		else there is no smaller element than what you looked for
+	and ditto avl_search_closest_greatest
+
+- create insert functions for these new search functions
+
+- create comparison macro:
+	#define AVL_COMPARE(a,b) ((a) < (b) ? -1 : (a) > (b) ? 1 : 0)
+
+- create comparison functions for common types:
+	- int, short, long, float, double, pointer, etc.
+	- create avl_types.h for stuff from <sys/types.h>, <unistd.h> etc:
+		size_t, ssize_t, socklen_t, timeval, timespec, ...
+
+- rename avl_init_$foo to avl_$foo_init
+	- ditto for alloc, insert, delete, etc.
+
+- never crash on passed NULL pointers
+
+- static initializers for trees and nodes
