@@ -3,8 +3,6 @@ $URL$
 
 - manpage!
 
-- create insert functions for the new search functions
-
 - never crash on passed NULL pointers
 
 - static initializers for trees and nodes
