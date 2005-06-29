@@ -135,7 +135,7 @@ static const avl_node_t *avl_search_leftmost_equal(const avl_tree_t *tree, const
 
 	for(;;) {
 		for(;;) {
-			node = r->left;
+			node = node->left;
 			if(!node)
 				return r;
 			if(cmp(item, node->item))
@@ -143,13 +143,13 @@ static const avl_node_t *avl_search_leftmost_equal(const avl_tree_t *tree, const
 			r = node;
 		}
 		for(;;) {
-			node = r->right;
+			node = node->right;
 			if(!node)
 				return r;
-			r = node;
 			if(!cmp(item, node->item))
 				break;
 		}
+		r = node;
 	}
 }
 
@@ -159,7 +159,7 @@ static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, cons
 
 	for(;;) {
 		for(;;) {
-			node = r->right;
+			node = node->right;
 			if(!node)
 				return r;
 			if(cmp(item, node->item))
@@ -167,13 +167,13 @@ static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, cons
 			r = node;
 		}
 		for(;;) {
-			node = r->left;
+			node = node->left;
 			if(!node)
 				return r;
-			r = node;
 			if(!cmp(item, node->item))
 				break;
 		}
+		r = node;
 	}
 }
 
