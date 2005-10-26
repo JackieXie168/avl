@@ -1,35 +1,51 @@
-.TH avl_tree_init 3 2005-03-09 libavl "AVL Reference Guide"
-.SH NAME
-.BI avl_tree_init, avl_tree_alloc
-- functions to allocate and initialize an augmented AVL tree
-.SH SYNOPSYS
-.nf
-.B #include <avl.h>
-.sp
-.BI "avl_tree_t *avl_tree_init(avl_tree_t *" tree ", avl_compare_t " cmp ", avl_freeitem_t " free );
-.nl
-.BI "avl_tree_t *avl_tree_alloc(avl_compare_t " cmp ", avl_freeitem_t " free );
-.nl
-.BI "avl_tree_t *avl_tree_clear(avl_tree_t *" tree );
-.fi
-.SH DESCRIPTION
-.B avl_tree_init()
+.Dd 2005-10-26
+.Dt AVL_TREE_INIT 3
+.Os libavl
+.Sh NAME
+.Nm avl_tree_init ,
+.Nm avl_tree_alloc ,
+.Nm avl_tree_clear
+.Nd functions to allocate and initialize an augmented AVL tree
+.Sh LIBRARY
+.Lb libavl
+.Sh SYNOPSIS
+.In avl.h
+.Ft avl_tree_t *
+.Fn avl_tree_init "avl_tree_t *tree" "avl_compare_t cmp" "avl_freeitem_t free"
+.Ft avl_tree_t *
+.Fn avl_tree_alloc "avl_compare_t cmp" "avl_freeitem_t free"
+.Ft avl_tree_t *
+.Fn avl_tree_clear "avl_tree_t *tree"
+.Sh DESCRIPTION
+.Fn avl_tree_init
 initializes the structure pointed to by
-.I tree
+.Fa tree
 for use with other avl functions.
-.sp
-The elements in this tree will be ordered using the strcmp()-like function supplied in
-.I cmp
+.Pp
+The elements in this tree will be ordered using the
+.Fn strcmp
+like function supplied in
+.Fa cmp
 (which may be
-.BR NULL
+.Dv NULL
 for unsorted, ordered lists) and if
-.I free
+.Fa free
 is not
-.BR NULL
+.Dv NULL
 then the delete functions in the avl library will use this to free any memory associated with the item.
-.sp
+.Sh RETURN VALUES
 Returns the value of
-.I tree
+.Fa tree
 (even if it's
-.BR NULL ) .
-
+.Dv NULL ) .
+.Sh ERRORS
+The
+.Fn avl_tree_alloc
+function will fail if:
+.Bl -tag -width Er
+.It Bq Er ENOMEM
+Out of memory.
+.El
+.Sh SEE ALSO
+.Xr avl_tree_free 3 ,
+.Xr avl_tree_purge 3
