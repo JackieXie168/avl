@@ -32,7 +32,16 @@ for unsorted, ordered lists) and if
 .Fa free
 is not
 .Dv NULL
-then the delete functions in the avl library will use this to free any memory associated with the item.
+then the delete functions in the avl library will use this to free any memory
+associated with the stored item.
+.Pp
+.Fn avl_tree_alloc
+allocates an avl_tree_t and initializes it using
+.Fn avl_tree_init .
+.Pp
+.Fn avl_tree_clear
+reinitializes the tree structure without touching the ordering/freeing
+functions, orphaning any tree nodes that it contains.
 .Sh RETURN VALUES
 Returns the value of
 .Fa tree
@@ -41,11 +50,24 @@ Returns the value of
 .Sh ERRORS
 The
 .Fn avl_tree_alloc
-function will fail if:
+function can fail if and only if
+.Fn malloc
+fails.
+If
+.Fn malloc
+fails, it sets
+.Dv errno
+appropriately. In particular, it may return
+.Dv NULL
+and set
+.Dv errno
+to:
 .Bl -tag -width Er
-.It Bq Er ENOMEM
+.It Er ENOMEM
 Out of memory.
 .El
 .Sh SEE ALSO
 .Xr avl_tree_free 3 ,
-.Xr avl_tree_purge 3
+.Xr avl_tree_purge 3 ,
+.Xr malloc 3 ,
+.Xr strcmp 3
