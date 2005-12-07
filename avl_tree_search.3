@@ -1,0 +1,95 @@
+.Dd 2005-12-07
+.Dt AVL_SEARCH 3
+.Os libavl
+.Sh NAME
+.Nm avl_search ,
+.Nm avl_search_left ,
+.Nm avl_search_right ,
+.Nm avl_search_rightish
+.Nd functions to search an augmented AVL tree
+.Sh LIBRARY
+.Lb libavl
+.Sh SYNOPSIS
+.In avl.h
+.Ft avl_node_t *
+.Fn avl_search "const avl_tree_t *tree" "const void *item"
+.Ft avl_node_t *
+.Fn avl_search_left "const avl_tree_t *tree" "const void *item" "int *exact"
+.Ft avl_node_t *
+.Fn avl_search_right "const avl_tree_t *tree" "const void *item" "int *exact"
+.Ft avl_node_t *
+.Fn avl_search_leftish "const avl_tree_t *tree" "const void *item" "int *exact"
+.Ft avl_node_t *
+.Fn avl_search_rightish "const avl_tree_t *tree" "const void *item" "int *exact"
+.Sh DESCRIPTION
+.Fn avl_search
+searches for the item in the tree and returns a matching node if found.
+.Pp
+.Fn avl_search_left
+searches for an item, returning either the first (leftmost) exact
+match, or (if no exact match could be found) the first (leftmost)
+of the nodes that have an item greater than the search item.
+If
+.Fa exact
+is not
+.Dv NULL ,
+.Fa *exact
+will be set to:
+.Bl -tag
+.It 0
+if the returned node is not equal
+.It 1
+if the returned node is equal
+.El
+.Pp
+.Fn avl_search_right
+Searches for an item, returning either the last (rightmost) exact
+match, or (if no exact match could be found) the last (rightmost)
+of the nodes that have an item smaller than the search item.
+If
+.Fa exact
+is not
+.Dv NULL ,
+.Fa *exact
+will be set to:
+.Bl -tag
+.It 0
+if the returned node is not equal
+.It 1
+if the returned node is equal
+.El
+.Pp
+.Fn avl_search_rightish
+Searches for an item, returning either some exact
+match, or (if no exact match could be found) the last (rightmost)
+of the nodes that have an item smaller than the search item.
+If
+.Fa exact
+is not
+.Dv NULL ,
+.Fa *exact
+will be set to:
+.Bl -tag
+.It 0
+if the returned node is not equal
+.It 1
+if the returned node is equal
+.El
+.Pp
+.Sh RETURN VALUES
+These functions return
+.Dv NULL
+if no suitable node was found.
+When returning
+.Dv NULL ,
+the value of
+.Fa *exact
+is set to 0 if
+.Fa exact
+is not
+.Dv NULL .
+.Sh ERRORS
+These functions do not affect the value of
+.Dv errno .
+.Sh SEE ALSO
+.Xr avl_insert 3
