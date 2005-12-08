@@ -31,7 +31,7 @@ inserts a node in the tree.
 Fails if a node with an equal item is already in the tree.
 .Pp
 .Fn avl_insert_left
-Insert a node into the tree.
+inserts a node into the tree.
 If nodes with equal items are already in the tree, this node will
 be inserted to the left of all those.
 .Pp
@@ -40,13 +40,13 @@ inserts a node in the tree.
 If nodes with equal items are already in the tree, this node will
 be inserted to the right of all those.
 .Pp
-.Fn avl_insert_rightish
+.Fn avl_insert_somewhere
 inserts a node in the tree. 
 If nodes with equal items are already in the tree, this node will
 be inserted somewhere among those.
 .Pp
 .Fn avl_insert_before
-Insert a node before another node.
+inserts a node before another node.
 If
 .Fa old
 is
@@ -54,7 +54,7 @@ is
 the item is appended to the tree.
 .Pp
 .Fn avl_insert_after
-Insert a node after another node.
+inserts a node after another node.
 If
 .Fa old
 is
