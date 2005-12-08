@@ -14,82 +14,61 @@
 .Ft avl_node_t *
 .Fn avl_insert "const avl_tree_t *tree" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_left "const avl_tree_t *tree" "const void *item" "int *exact"
+.Fn avl_insert_left "const avl_tree_t *tree" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_right "const avl_tree_t *tree" "const void *item" "int *exact"
+.Fn avl_insert_right "const avl_tree_t *tree" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_leftish "const avl_tree_t *tree" "const void *item" "int *exact"
+.Fn avl_insert_leftish "const avl_tree_t *tree" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_rightish "const avl_tree_t *tree" "const void *item" "int *exact"
+.Fn avl_insert_somewhere "const avl_tree_t *tree" "const void *item"
+.Ft avl_node_t *
+.Fn avl_insert_before "const avl_tree_t *tree" "const void *item"
+.Ft avl_node_t *
+.Fn avl_insert_after "const avl_tree_t *tree" "const void *item"
 .Sh DESCRIPTION
 .Fn avl_insert
-insertes for the item in the tree and returns a matching node if found.
+inserts a node in the tree.
+Fails if a node with an equal item is already in the tree.
 .Pp
 .Fn avl_insert_left
-insertes for an item, returning either the first (leftmost) exact
-match, or (if no exact match could be found) the first (leftmost)
-of the nodes that have an item greater than the insert item.
-If
-.Fa exact
-is not
-.Dv NULL ,
-.Fa *exact
-will be set to:
-.Bl -tag
-.It 0
-if the returned node is not equal
-.It 1
-if the returned node is equal
-.El
+Insert a node into the tree.
+If nodes with equal items are already in the tree, this node will
+be inserted to the left of all those.
 .Pp
 .Fn avl_insert_right
-Searches for an item, returning either the last (rightmost) exact
-match, or (if no exact match could be found) the last (rightmost)
-of the nodes that have an item smaller than the insert item.
-If
-.Fa exact
-is not
-.Dv NULL ,
-.Fa *exact
-will be set to:
-.Bl -tag
-.It 0
-if the returned node is not equal
-.It 1
-if the returned node is equal
-.El
+inserts a node in the tree. 
+If nodes with equal items are already in the tree, this node will
+be inserted to the right of all those.
 .Pp
 .Fn avl_insert_rightish
-Searches for an item, returning either some exact
-match, or (if no exact match could be found) the last (rightmost)
-of the nodes that have an item smaller than the insert item.
-If
-.Fa exact
-is not
-.Dv NULL ,
-.Fa *exact
-will be set to:
-.Bl -tag
-.It 0
-if the returned node is not equal
-.It 1
-if the returned node is equal
-.El
+inserts a node in the tree. 
+If nodes with equal items are already in the tree, this node will
+be inserted somewhere among those.
 .Pp
-.Sh RETURN VALUES
-These functions return
-.Dv NULL
-if no suitable node was found.
-When returning
+.Fn avl_insert_before
+Insert a node before another node.
+If
+.Fa old
+is
 .Dv NULL ,
-the value of
-.Fa *exact
-is set to 0 if
-.Fa exact
-is not
-.Dv NULL .
+the item is appended to the tree.
+.Pp
+.Fn avl_insert_after
+Insert a node after another node.
+If
+.Fa old
+is
+.Dv NULL ,
+the item is prepended to the tree.
+.Sh RETURN VALUES
+These functions return the newly inserted node.
+Only
+.Fn avl_insert
+will return
+.Dv NULL
+if a node with an equal item is already in the tree.
 .Sh ERRORS
 These functions do not affect the value of
 .Dv errno .
 .Sh SEE ALSO
-.Xr avl_insert 3
+.Xr avl_search 3
