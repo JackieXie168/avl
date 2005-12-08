@@ -12,19 +12,19 @@
 .Sh SYNOPSIS
 .In avl.h
 .Ft avl_node_t *
-.Fn avl_insert "const avl_tree_t *tree" "const void *item"
+.Fn avl_insert "avl_tree_t *tree" "avl_node_t *node"
 .Ft avl_node_t *
-.Fn avl_insert_left "const avl_tree_t *tree" "const void *item"
+.Fn avl_insert_left "avl_tree_t *tree" "avl_node_t *node"
 .Ft avl_node_t *
-.Fn avl_insert_right "const avl_tree_t *tree" "const void *item"
+.Fn avl_insert_right "avl_tree_t *tree" "avl_node_t *node"
 .Ft avl_node_t *
-.Fn avl_insert_leftish "const avl_tree_t *tree" "const void *item"
+.Fn avl_insert_leftish "avl_tree_t *tree" "avl_node_t *node"
 .Ft avl_node_t *
-.Fn avl_insert_somewhere "const avl_tree_t *tree" "const void *item"
+.Fn avl_insert_somewhere "avl_tree_t *tree" "avl_node_t *node"
 .Ft avl_node_t *
-.Fn avl_insert_before "const avl_tree_t *tree" "const void *item"
+.Fn avl_insert_before "avl_tree_t *tree" "avl_node_t *old" "avl_node_t *node"
 .Ft avl_node_t *
-.Fn avl_insert_after "const avl_tree_t *tree" "const void *item"
+.Fn avl_insert_after "avl_tree_t *tree" "avl_node_t *old" "avl_node_t *node"
 .Sh DESCRIPTION
 .Fn avl_insert
 inserts a node in the tree.
