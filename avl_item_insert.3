@@ -1,4 +1,4 @@
-.Dd 2005-12-07
+.Dd 2005-12-08
 .Dt AVL_ITEM_INSERT 3
 .Os libavl
 .Sh NAME
@@ -12,19 +12,19 @@
 .Sh SYNOPSIS
 .In avl.h
 .Ft avl_node_t *
-.Fn avl_item_insert "avl_tree_t *tree" "const void *item"
+.Fn avl_item_insert "avl_tree_t *tree" "void *item"
 .Ft avl_node_t *
-.Fn avl_item_insert_left "avl_tree_t *tree" "const void *item"
+.Fn avl_item_insert_left "avl_tree_t *tree" "void *item"
 .Ft avl_node_t *
-.Fn avl_item_insert_right "avl_tree_t *tree" "const void *item"
+.Fn avl_item_insert_right "avl_tree_t *tree" "void *item"
 .Ft avl_node_t *
-.Fn avl_item_insert_leftish "avl_tree_t *tree" "const void *item"
+.Fn avl_item_insert_leftish "avl_tree_t *tree" "void *item"
 .Ft avl_node_t *
-.Fn avl_item_insert_somewhere "avl_tree_t *tree" "const void *item"
+.Fn avl_item_insert_somewhere "avl_tree_t *tree" "void *item"
 .Ft avl_node_t *
-.Fn avl_item_insert_before "avl_tree_t *tree" "avl_node_t *old" "const void *item"
+.Fn avl_item_insert_before "avl_tree_t *tree" "avl_node_t *old" "void *item"
 .Ft avl_node_t *
-.Fn avl_item_insert_after "avl_tree_t *tree" "avl_node_t *old" "const void *item"
+.Fn avl_item_insert_after "avl_tree_t *tree" "avl_node_t *old" "void *item"
 .Sh DESCRIPTION
 .Fn avl_item_insert
 inserts a node in the tree.
