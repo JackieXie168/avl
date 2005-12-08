@@ -139,21 +139,21 @@ extern avl_node_t *avl_node_init(avl_node_t *avlnode, void *item);
 extern avl_node_t *avl_item_insert(avl_tree_t *, void *item);
 
 /* Insert an item into the tree and return the new node.
- * If a nodes with equal items are already in the tree, this item will
+ * If nodes with equal items are already in the tree, this item will
  * be inserted to the left of all those. Returns NULL and sets errno if
  * memory for the new node could not be allocated.
  * O(lg n) */
 extern avl_node_t *avl_item_insert_left(avl_tree_t *, void *);
 
 /* Insert an item into the tree and return the new node.
- * If a nodes with equal items are already in the tree, this item will
+ * If nodes with equal items are already in the tree, this item will
  * be inserted to the right of all those. Returns NULL and sets errno if
  * memory for the new node could not be allocated.
  * O(lg n) */
 extern avl_node_t *avl_item_insert_right(avl_tree_t *, void *);
 
 /* Insert an item into the tree and return the new node.
- * If a nodes with equal items are already in the tree, this item will
+ * If nodes with equal items are already in the tree, this item will
  * be inserted somewhere among those. Returns NULL and sets errno if
  * memory for the new node could not be allocated.
  * O(lg n) */
