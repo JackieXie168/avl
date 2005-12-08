@@ -1,51 +1,51 @@
-.Dd 2005-12-08
-.Dt AVL_INSERT 3
+.Dd 2005-12-07
+.Dt AVL_ITEM_INSERT 3
 .Os libavl
 .Sh NAME
-.Nm avl_insert ,
-.Nm avl_insert_left ,
-.Nm avl_insert_right ,
-.Nm avl_insert_rightish
+.Nm avl_item_insert ,
+.Nm avl_item_insert_left ,
+.Nm avl_item_insert_right ,
+.Nm avl_item_insert_rightish
 .Nd functions to insert an augmented AVL tree
 .Sh LIBRARY
 .Lb libavl
 .Sh SYNOPSIS
 .In avl.h
 .Ft avl_node_t *
-.Fn avl_insert "avl_tree_t *tree" "avl_node_t *node"
+.Fn avl_item_insert "avl_tree_t *tree" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_left "avl_tree_t *tree" "avl_node_t *node"
+.Fn avl_item_insert_left "avl_tree_t *tree" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_right "avl_tree_t *tree" "avl_node_t *node"
+.Fn avl_item_insert_right "avl_tree_t *tree" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_leftish "avl_tree_t *tree" "avl_node_t *node"
+.Fn avl_item_insert_leftish "avl_tree_t *tree" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_somewhere "avl_tree_t *tree" "avl_node_t *node"
+.Fn avl_item_insert_somewhere "avl_tree_t *tree" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_before "avl_tree_t *tree" "avl_node_t *old" "avl_node_t *node"
+.Fn avl_item_insert_before "avl_tree_t *tree" "avl_node_t *old" "const void *item"
 .Ft avl_node_t *
-.Fn avl_insert_after "avl_tree_t *tree" "avl_node_t *old" "avl_node_t *node"
+.Fn avl_item_insert_after "avl_tree_t *tree" "avl_node_t *old" "const void *item"
 .Sh DESCRIPTION
-.Fn avl_insert
+.Fn avl_item_insert
 inserts a node in the tree.
 Fails if a node with an equal item is already in the tree.
 .Pp
-.Fn avl_insert_left
+.Fn avl_item_insert_left
 inserts a node into the tree.
 If nodes with equal items are already in the tree, this node will
 be inserted to the left of all those.
 .Pp
-.Fn avl_insert_right
+.Fn avl_item_insert_right
 inserts a node in the tree. 
 If nodes with equal items are already in the tree, this node will
 be inserted to the right of all those.
 .Pp
-.Fn avl_insert_somewhere
+.Fn avl_item_insert_somewhere
 inserts a node in the tree. 
 If nodes with equal items are already in the tree, this node will
 be inserted somewhere among those.
 .Pp
-.Fn avl_insert_before
+.Fn avl_item_insert_before
 inserts a node before another node.
 If
 .Fa old
@@ -53,7 +53,7 @@ is
 .Dv NULL ,
 the item is appended to the tree.
 .Pp
-.Fn avl_insert_after
+.Fn avl_item_insert_after
 inserts a node after another node.
 If
 .Fa old
@@ -63,7 +63,7 @@ the item is prepended to the tree.
 .Sh RETURN VALUES
 These functions return the newly inserted node.
 Only
-.Fn avl_insert
+.Fn avl_item_insert
 will return
 .Dv NULL
 if a node with an equal item is already in the tree.
