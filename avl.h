@@ -179,19 +179,19 @@ extern avl_node_t *avl_item_insert_after(avl_tree_t *, avl_node_t *old, void *ne
 extern avl_node_t *avl_insert(avl_tree_t *, avl_node_t *);
 
 /* Insert a node into the tree and return it.
- * If a nodes with equal items are already in the tree, this node will
+ * If nodes with equal items are already in the tree, this node will
  * be inserted to the left of all those.
  * O(lg n) */
 extern avl_node_t *avl_insert_left(avl_tree_t *, avl_node_t *);
 
 /* Insert a node into the tree and return it.
- * If a nodes with equal items are already in the tree, this node will
+ * If nodes with equal items are already in the tree, this node will
  * be inserted to the right of all those.
  * O(lg n) */
 extern avl_node_t *avl_insert_right(avl_tree_t *, avl_node_t *);
 
 /* Insert a node into the tree and return it.
- * If a nodes with equal items are already in the tree, this node will
+ * If nodes with equal items are already in the tree, this node will
  * be inserted somewhere among those.
  * O(lg n) */
 extern avl_node_t *avl_insert_somewhere(avl_tree_t *, avl_node_t *);
