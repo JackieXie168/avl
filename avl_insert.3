@@ -5,7 +5,9 @@
 .Nm avl_insert ,
 .Nm avl_insert_left ,
 .Nm avl_insert_right ,
-.Nm avl_insert_rightish
+.Nm avl_insert_somewhere ,
+.Nm avl_insert_before ,
+.Nm avl_insert_after
 .Nd functions to add a node to an augmented AVL tree
 .Sh LIBRARY
 .Lb libavl
@@ -17,8 +19,6 @@
 .Fn avl_insert_left "avl_tree_t *tree" "avl_node_t *node"
 .Ft avl_node_t *
 .Fn avl_insert_right "avl_tree_t *tree" "avl_node_t *node"
-.Ft avl_node_t *
-.Fn avl_insert_leftish "avl_tree_t *tree" "avl_node_t *node"
 .Ft avl_node_t *
 .Fn avl_insert_somewhere "avl_tree_t *tree" "avl_node_t *node"
 .Ft avl_node_t *
