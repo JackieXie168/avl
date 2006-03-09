@@ -46,7 +46,7 @@ static void avl_rebalance(avl_tree_t *, avl_node_t *);
 #define NODE_DEPTH(n)  ((n) ? (n)->depth : 0)
 #define L_DEPTH(n)     (NODE_DEPTH((n)->left))
 #define R_DEPTH(n)     (NODE_DEPTH((n)->right))
-#define CALC_DEPTH(n)  ((L_DEPTH(n)>R_DEPTH(n)?L_DEPTH(n):R_DEPTH(n)) + 1)
+#define CALC_DEPTH(n)  ((unsigned char)((L_DEPTH(n)>R_DEPTH(n)?L_DEPTH(n):R_DEPTH(n)) + 1))
 #endif
 
 const avl_node_t avl_node_0 = {0};
@@ -186,12 +186,12 @@ avl_node_t *avl_search_rightish(const avl_tree_t *tree, const void *item, int *e
 		exact = &c;
 
 	if(!tree)
-		return *exact = 0, NULL;
+		return *exact = 0, (avl_node_t *)NULL;
 
 	node = tree->top;
 
 	if(!node)
-		return *exact = 0, NULL;
+		return *exact = 0, (avl_node_t *)NULL;
 
 	cmp = tree->cmp;
 
@@ -222,7 +222,7 @@ avl_node_t *avl_search_left(const avl_tree_t *tree, const void *item, int *exact
 		exact = &c;
 
 	if(!tree)
-		return *exact = 0, NULL;
+		return *exact = 0, (avl_node_t *)NULL;
 
 	node = avl_search_rightish(tree, item, exact);
 
@@ -299,18 +299,18 @@ avl_tree_t *avl_tree_purge(avl_tree_t *avltree) {
 void avl_tree_free(avl_tree_t *avltree) {
 	if(!avltree)
 		return;
-	avl_tree_purge(avltree);
+	(void)avl_tree_purge(avltree);
 	free(avltree);
 }
 
 static void avl_node_clear(avl_node_t *newnode) {
 	newnode->left = newnode->right = NULL;
-	#ifdef AVL_COUNT
+#	ifdef AVL_COUNT
 	newnode->count = 1;
-	#endif
-	#ifdef AVL_DEPTH
+#	endif
+#	ifdef AVL_DEPTH
 	newnode->depth = 1;
-	#endif
+#	endif
 }
 
 avl_node_t *avl_node_init(avl_node_t *newnode, void *item) {
@@ -412,7 +412,7 @@ avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
-		return errno = EFAULT, NULL;
+		return errno = EFAULT, (avl_node_t *)NULL;
 
 	newnode = avl_node_init(malloc(sizeof *newnode), item);
 	if(newnode) {
@@ -428,7 +428,7 @@ avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
-		return errno = EFAULT, NULL;
+		return errno = EFAULT, (avl_node_t *)NULL;
 
 	newnode = avl_node_init(malloc(sizeof *newnode), item);
 	if(newnode)
@@ -440,7 +440,7 @@ avl_node_t *avl_item_insert_before(avl_tree_t *avltree, avl_node_t *node, void *
 	avl_node_t *newnode;
 
 	if(!avltree)
-		return errno = EFAULT, NULL;
+		return errno = EFAULT, (avl_node_t *)NULL;
 
 	newnode = avl_node_init(malloc(sizeof *newnode), item);
 	if(newnode)
@@ -452,7 +452,7 @@ avl_node_t *avl_item_insert_after(avl_tree_t *avltree, avl_node_t *node, void *i
 	avl_node_t *newnode;
 
 	if(!avltree)
-		return errno = EFAULT, NULL;
+		return errno = EFAULT, (avl_node_t *)NULL;
 
 	newnode = avl_node_init(malloc(sizeof *newnode), item);
 	if(newnode)
@@ -464,7 +464,7 @@ avl_node_t *avl_item_insert_left(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
-		return errno = EFAULT, NULL;
+		return errno = EFAULT, (avl_node_t *)NULL;
 
 	newnode = avl_node_init(malloc(sizeof *newnode), item);
 	if(newnode)
@@ -476,7 +476,7 @@ avl_node_t *avl_item_insert_right(avl_tree_t *avltree, void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
-		return errno = EFAULT, NULL;
+		return errno = EFAULT, (avl_node_t *)NULL;
 
 	newnode = avl_node_init(malloc(sizeof *newnode), item);
 	if(newnode)
@@ -547,7 +547,7 @@ void *avl_delete(avl_tree_t *avltree, avl_node_t *avlnode) {
 	void *item = NULL;
 	if(avlnode) {
 		item = avlnode->item;
-		avl_unlink(avltree, avlnode);
+		(void)avl_unlink(avltree, avlnode);
 		if(avltree->freeitem)
 			avltree->freeitem(item);
 		free(avlnode);
@@ -622,15 +622,15 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 		switch(avl_check_balance(avlnode)) {
 		case -1:
 			child = avlnode->left;
-			#ifdef AVL_DEPTH
+#			ifdef AVL_DEPTH
 			if(L_DEPTH(child) >= R_DEPTH(child)) {
-			#else
-			#ifdef AVL_COUNT
+#			else
+#			ifdef AVL_COUNT
 			if(L_COUNT(child) >= R_COUNT(child)) {
-			#else
-			#error No balancing possible.
-			#endif
-			#endif
+#			else
+#			error No balancing possible.
+#			endif
+#			endif
 				avlnode->left = child->right;
 				if(avlnode->left)
 					avlnode->left->parent = avlnode;
@@ -638,14 +638,14 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 				avlnode->parent = child;
 				*superparent = child;
 				child->parent = parent;
-				#ifdef AVL_COUNT
+#				ifdef AVL_COUNT
 				avlnode->count = CALC_COUNT(avlnode);
 				child->count = CALC_COUNT(child);
-				#endif
-				#ifdef AVL_DEPTH
+#				endif
+#				ifdef AVL_DEPTH
 				avlnode->depth = CALC_DEPTH(avlnode);
 				child->depth = CALC_DEPTH(child);
-				#endif
+#				endif
 			} else {
 				gchild = child->right;
 				avlnode->left = gchild->right;
@@ -662,29 +662,29 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 					gchild->left->parent = gchild;
 				*superparent = gchild;
 				gchild->parent = parent;
-				#ifdef AVL_COUNT
+#				ifdef AVL_COUNT
 				avlnode->count = CALC_COUNT(avlnode);
 				child->count = CALC_COUNT(child);
 				gchild->count = CALC_COUNT(gchild);
-				#endif
-				#ifdef AVL_DEPTH
+#				endif
+#				ifdef AVL_DEPTH
 				avlnode->depth = CALC_DEPTH(avlnode);
 				child->depth = CALC_DEPTH(child);
 				gchild->depth = CALC_DEPTH(gchild);
-				#endif
+#				endif
 			}
 		break;
 		case 1:
 			child = avlnode->right;
-			#ifdef AVL_DEPTH
+#			ifdef AVL_DEPTH
 			if(R_DEPTH(child) >= L_DEPTH(child)) {
-			#else
-			#ifdef AVL_COUNT
+#			else
+#			ifdef AVL_COUNT
 			if(R_COUNT(child) >= L_COUNT(child)) {
-			#else
-			#error No balancing possible.
-			#endif
-			#endif
+#			else
+#			error No balancing possible.
+#			endif
+#			endif
 				avlnode->right = child->left;
 				if(avlnode->right)
 					avlnode->right->parent = avlnode;
@@ -692,14 +692,14 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 				avlnode->parent = child;
 				*superparent = child;
 				child->parent = parent;
-				#ifdef AVL_COUNT
+#				ifdef AVL_COUNT
 				avlnode->count = CALC_COUNT(avlnode);
 				child->count = CALC_COUNT(child);
-				#endif
-				#ifdef AVL_DEPTH
+#				endif
+#				ifdef AVL_DEPTH
 				avlnode->depth = CALC_DEPTH(avlnode);
 				child->depth = CALC_DEPTH(child);
-				#endif
+#				endif
 			} else {
 				gchild = child->left;
 				avlnode->right = gchild->left;
@@ -716,25 +716,25 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 					gchild->right->parent = gchild;
 				*superparent = gchild;
 				gchild->parent = parent;
-				#ifdef AVL_COUNT
+#				ifdef AVL_COUNT
 				avlnode->count = CALC_COUNT(avlnode);
 				child->count = CALC_COUNT(child);
 				gchild->count = CALC_COUNT(gchild);
-				#endif
-				#ifdef AVL_DEPTH
+#				endif
+#				ifdef AVL_DEPTH
 				avlnode->depth = CALC_DEPTH(avlnode);
 				child->depth = CALC_DEPTH(child);
 				gchild->depth = CALC_DEPTH(gchild);
-				#endif
+#				endif
 			}
 		break;
 		default:
-			#ifdef AVL_COUNT
+#			ifdef AVL_COUNT
 			avlnode->count = CALC_COUNT(avlnode);
-			#endif
-			#ifdef AVL_DEPTH
+#			endif
+#			ifdef AVL_DEPTH
 			avlnode->depth = CALC_DEPTH(avlnode);
-			#endif
+#			endif
 		}
 		avlnode = parent;
 	}
