@@ -1,19 +1,21 @@
 # You may select DEPTHs (no indexing), COUNTs (slower) or both (more memory).
 #CPPFLAGS += -DAVL_COUNT -DAVL_DEPTH
 
-LN ?= gcc
 INSTALL ?= /usr/bin/install
 LDCONFIG ?= /sbin/ldconfig
 
 # Some suggestions: (-mcpu= generates i386 compatible code)
-CC=gcc-4.0
+#CC = /opt/tendra/bin/tcc -I/usr/include -Yc99 -Xs -D__gnuc_va_list=int
+#LN = /opt/tendra/bin/tcc
+CC = gcc-4.1
+LN = gcc-4.1
 #CFLAGS = -O2 -fomit-frame-pointer -pipe -march=i586 -Wall -g
-CFLAGS = -g -pg -O6 -pipe -march=athlon-xp -Wall -Werror -ansi -pedantic
+CFLAGS = -Os -fPIC -pipe -march=athlon-xp -Wall -Werror -ansi -pedantic
 #CFLAGS = -O6 -fomit-frame-pointer -pipe -march=athlon-xp -Wall -ansi -pedantic
-#LDFLAGS = -s
-LDFLAGS = -g -pg
+LDFLAGS = -s -fPIC
+#LDFLAGS = -g -pg
 
-CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mtune=i686 -w
+#CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mtune=i686 -w
 CFLAGS += -DHAVE_C99 -DHAVE_POSIX
 
 prefix ?= /usr/local
