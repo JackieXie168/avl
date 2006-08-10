@@ -41,7 +41,7 @@ canmiss: canmiss.o avl.o
 	$(LN) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 $(LIBAVL): avl.o
-	$(LN) -nostdlib -shared -Wl,-soname,libavl.so.1 $^ -o $@ -lc
+	$(LN) -nostdlib -shared -Wl,-soname,libavl.so.2 $^ -o $@ -lc
 
 clean:
 	$(RM) *.o $(PROGRAMS) libavl.so.*
