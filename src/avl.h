@@ -207,7 +207,7 @@ extern avl_node_t *avl_insert_before(avl_tree_t *, avl_node_t *old, avl_node_t *
 extern avl_node_t *avl_insert_after(avl_tree_t *, avl_node_t *old, avl_node_t *new);
 
 /* Deletes a node from the tree.
- * Returns the value of avltree (even if it's NULL).
+ * Returns the value of the node (even if it's NULL).
  * The item will not be free()d regardless of the tree's freeitem handler.
  * This function comes in handy if you need to update the search key.
  * O(lg n) */
