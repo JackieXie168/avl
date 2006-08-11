@@ -3,16 +3,17 @@
 
 INSTALL ?= /usr/bin/install
 LDCONFIG ?= /sbin/ldconfig
-
-# Some suggestions: (-mcpu= generates i386 compatible code)
+LIBTOOL ?= /usr/bin/libtool --quiet
 #CC = /opt/tendra/bin/tcc -I/usr/include -Yc99 -Xs -D__gnuc_va_list=int
 #LN = /opt/tendra/bin/tcc
 CC = gcc
 LN = gcc
+
+# Some suggestions: (-mtune= keeps the code i386 compatible)
 #CFLAGS = -O2 -fomit-frame-pointer -pipe -march=i586 -Wall -g
 CFLAGS = -Os -pipe -march=athlon-xp -Wall -Werror -ansi -pedantic
 #CFLAGS = -O6 -fomit-frame-pointer -pipe -march=athlon-xp -Wall -ansi -pedantic
-LDFLAGS = -s -fpic
+LDFLAGS = -s
 #LDFLAGS = -g -pg
 
 #CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mtune=i686 -w
@@ -23,42 +24,38 @@ libdir ?= $(prefix)/lib
 #includedir ?= $(prefix)/include
 includedir ?= /usr/include
 
-PROGRAMS = avlsort setdiff canmiss
-LIBAVL = libavl.la
-LIBRARIES = $(LIBAVL)
+LIBRARIES = src/libavl.la
+PROGRAMS = example/avlsort example/setdiff example/canmiss
 
-default: $(LIBAVL)
+default: $(LIBRARIES)
 
-all: $(LIBAVL) $(PROGRAMS)
+all: $(LIBRARIES) $(PROGRAMS)
 
-setdiff: setdiff.o avl.o
-	$(LN) $(LDFLAGS) $^ -o $@ $(LIBS)
+example/setdiff: example/setdiff.o
+	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) $^ -o $@ $(LIBS) -Lsrc -lavl
 
-avlsort: avlsort.o avl.o
-	$(LN) $(LDFLAGS) $^ -o $@ $(LIBS)
+example/avlsort: example/avlsort.o
+	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) $^ -o $@ $(LIBS) -Lsrc -lavl
 
-canmiss: canmiss.o avl.o
-	$(LN) $(LDFLAGS) $^ -o $@ $(LIBS)
+example/canmiss: example/canmiss.o
+	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) $^ -o $@ $(LIBS) -Lsrc -lavl
 
-avl.lo: avl.c
-	libtool --mode=compile $(CC) $(CFLAGS) -c $^ -o $@
+src/avl.lo: src/avl.c
+	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c $^ -o $@
 
-$(LIBAVL): avl.lo
-	libtool --mode=link $(CC) $(LDFLAGS) -rpath /usr/local/lib -version-number 2:0 $^ -o $@
+src/libavl.la: src/avl.lo
+	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) -rpath /usr/local/lib -version-number 2:0 $^ -o $@
 
 clean:
-	$(RM) *.o $(PROGRAMS) libavl.so.* *.la *.lo
+	$(RM) src/*.lo example/*.o
+	$(LIBTOOL) --mode=clean $(RM) $(LIBRARIES) $(PROGRAMS)
 
 install: all
 	$(INSTALL) -d $(DESTDIR)$(includedir)
-	$(INSTALL) -m 644 avl.h $(DESTDIR)$(includedir)
+	$(INSTALL) -m 644 src/avl.h $(DESTDIR)$(includedir)
 	$(INSTALL) -d $(DESTDIR)$(libdir)
-	$(INSTALL) -m 644 $(LIBRARIES) $(DESTDIR)$(libdir)
-	for i in $(LIBRARIES); do\
-		ln -sf $$i $(DESTDIR)$(libdir)/$${i%.*};\
-		ln -sf $${i%.*} $(DESTDIR)$(libdir)/$${i%.*.*};\
-	done
-	#-$(LDCONFIG)
+	$(LIBTOOL) --mode=install $(INSTALL) -m 644 $(LIBRARIES) $(DESTDIR)$(libdir)
+	$(LIBTOOL) --mode=finish $(DESTDIR)$(libdir)
 
-.PHONY: clean install all
+.PHONY: clean install all default
 .PRECIOUS: %.h %.c
