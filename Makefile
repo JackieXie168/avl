@@ -17,7 +17,7 @@ LDFLAGS = -s
 #LDFLAGS = -g -pg
 
 #CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mtune=i686 -w
-CFLAGS += -DHAVE_C99 -DHAVE_POSIX
+CFLAGS += -DHAVE_C99 -DHAVE_POSIX -Isrc
 
 prefix ?= /usr/local
 libdir ?= $(prefix)/lib
@@ -47,8 +47,7 @@ src/libavl.la: src/avl.lo
 	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) -rpath /usr/local/lib -version-number 2:0 $^ -o $@
 
 clean:
-	$(RM) src/*.lo example/*.o
-	$(LIBTOOL) --mode=clean $(RM) $(LIBRARIES) $(PROGRAMS)
+	$(LIBTOOL) --mode=clean $(RM) $(LIBRARIES) $(PROGRAMS) src/*.lo example/*.o
 
 install: all
 	$(INSTALL) -d $(DESTDIR)$(includedir)
