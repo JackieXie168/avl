@@ -1,0 +1,67 @@
+.Dd 2006-08-11
+.Dt AVL_TREE_DELETE 3
+.Os libavl
+.Sh NAME
+.Nm avl_delete ,
+.Nm avl_item_delete ,
+.Nm avl_unlink
+.Nd functions to remove a node from an augmented AVL tree
+.Sh LIBRARY
+.Lb libavl
+.Sh SYNOPSIS
+.In avl.h
+.Ft void *
+.Fn avl_delete "avl_tree_t *" "avl_node_t *node"
+.Ft void *
+.Fn avl_item_delete "avl_tree_t *" "const void *item"
+.Ft avl_node_t *
+.Fn avl_unlink "avl_tree_t *tree" "avl_node_t *node"
+.Sh DESCRIPTION
+.Fn avl_delete
+deletes a node from the tree and frees it using
+.Fn free .
+Returns immediately if the node is
+.Dv NULL .
+If the tree's freeitem is not
+.Dv NULL ,
+it is invoked on the item.
+.Pp
+.Fn avl_item_delete
+searches for a node in the tree using the given
+.Fa item
+as the key and, if found, deletes the node and frees it using
+.Fn free .
+If the tree's freeitem is not
+.Dv NULL ,
+it is invoked on the item.
+.Pp
+.Fn avl_unlink
+removes a node from the tree.
+The freeitem handler of the tree (if any) will not be invoked on the item.
+This function is useful if you need to update the search key or if you're
+doing your own memory management for nodes.
+.Sh RETURN VALUES
+.Fn avl_delete
+and
+.Fn avl_item_delete
+return the item that was stored inside the deleted node, unless it
+was freed using the freeitem of the tree.
+In the case of
+.Fn avl_item_delete ,
+if the item was not found,
+.Dv NULL
+is returned.
+.Pp
+.Fn avl_unlink
+returns the value of
+.Fa node
+(even if it's
+.Dv NULL ) .
+.Sh ERRORS
+These functions do not affect the value of
+.Dv errno .
+.Sh SEE ALSO
+.Xr avl_tree_init 3 ,
+.Xr avl_search 3 ,
+.Xr avl_insert 3 ,
+.Xr free 3
