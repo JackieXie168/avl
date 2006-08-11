@@ -3,7 +3,6 @@ $URL$
 
 - manpages for:
 
-  avl_delete
   avl_fixup
   avl_count
   avl_at
