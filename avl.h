@@ -341,5 +341,5 @@ AVL_CMP_DECLARE_T(size)
 AVL_CMP_DECLARE_T(ssize)
 AVL_CMP_DECLARE_T(socklen)
 
-extern int avl_cmp_timeval(const struct timeval *, const struct timeval *);
+extern int avl_timeval_cmp(const struct timeval *, const struct timeval *);
 #endif

@@ -803,7 +803,7 @@ AVL_CMP_DEFINE_T(size)
 AVL_CMP_DEFINE_T(ssize)
 AVL_CMP_DEFINE_T(socklen)
 
-int avl_cmp_timeval(const struct timeval *a, const struct timeval *b) {
+int avl_timeval_cmp(const struct timeval *a, const struct timeval *b) {
 	int r;
 	r = AVL_CMP(a->tv_sec, b->tv_sec);
 	if(!r)
