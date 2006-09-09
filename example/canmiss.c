@@ -149,7 +149,7 @@ static void toon_overtocht(const toestand_t *van, const toestand_t *naar) {
 	dir = van->bootje ? "←" : "→";
 
 	printf("             %s \\", dir);
-		
+
 	for(i = 0; i < oi.ko; i++)
 		putchar('K');
 	for(; i < oi.to; i++)
