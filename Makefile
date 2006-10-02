@@ -44,7 +44,7 @@ src/avl.lo: src/avl.c
 	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c $^ -o $@
 
 src/libavl.la: src/avl.lo
-	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) -rpath /usr/local/lib -version-number 2:0 $^ -o $@
+	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) -rpath $(libdir) -version-number 2:0 $^ -o $@
 
 clean:
 	$(LIBTOOL) --mode=clean $(RM) $(LIBRARIES) $(PROGRAMS) src/*.lo example/*.o
