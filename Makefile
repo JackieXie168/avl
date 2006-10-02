@@ -1,6 +1,3 @@
-# You may select DEPTHs (no indexing), COUNTs (slower) or both (more memory).
-#CPPFLAGS += -DAVL_COUNT -DAVL_DEPTH
-
 INSTALL ?= /usr/bin/install
 LDCONFIG ?= /sbin/ldconfig
 LIBTOOL ?= /usr/bin/libtool --quiet
@@ -8,6 +5,9 @@ LIBTOOL ?= /usr/bin/libtool --quiet
 #LN = /opt/tendra/bin/tcc
 CC = gcc
 LN = gcc
+
+# You may select DEPTHs (no indexing), COUNTs (slower) or both (more memory).
+#CPPFLAGS += -DAVL_COUNT -DAVL_DEPTH
 
 # Some suggestions: (-mtune= keeps the code i386 compatible)
 #CFLAGS = -O2 -fomit-frame-pointer -pipe -march=i586 -Wall -g
@@ -31,6 +31,9 @@ default: $(LIBRARIES)
 
 all: $(LIBRARIES) $(PROGRAMS)
 
+%.o %.lo: %.c
+	$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
+
 example/setdiff: example/setdiff.o
 	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) $^ -o $@ $(LIBS) -Lsrc -lavl
 
@@ -39,9 +42,6 @@ example/avlsort: example/avlsort.o
 
 example/canmiss: example/canmiss.o
 	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) $^ -o $@ $(LIBS) -Lsrc -lavl
-
-src/avl.lo: src/avl.c
-	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c $^ -o $@
 
 src/libavl.la: src/avl.lo
 	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) -rpath $(libdir) -version-number 2:0 $^ -o $@
