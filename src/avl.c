@@ -313,9 +313,9 @@ static void avl_node_clear(avl_node_t *newnode) {
 #	endif
 }
 
-avl_node_t *avl_node_init(avl_node_t *newnode, void *item) {
+avl_node_t *avl_node_init(avl_node_t *newnode, const void *item) {
 	if(newnode)
-		newnode->item = item;
+		newnode->item = (void *)item;
 	return newnode;
 }
 
@@ -408,7 +408,7 @@ avl_node_t *avl_insert_somewhere(avl_tree_t *avltree, avl_node_t *newnode) {
 	return avl_insert_after(avltree, avl_search_rightish(avltree, newnode->item, NULL), newnode);
 }
 
-avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
+avl_node_t *avl_item_insert(avl_tree_t *avltree, const void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
@@ -424,7 +424,7 @@ avl_node_t *avl_item_insert(avl_tree_t *avltree, void *item) {
 	return NULL;
 }
 
-avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, void *item) {
+avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, const void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
@@ -436,7 +436,7 @@ avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, void *item) {
 	return NULL;
 }
 
-avl_node_t *avl_item_insert_before(avl_tree_t *avltree, avl_node_t *node, void *item) {
+avl_node_t *avl_item_insert_before(avl_tree_t *avltree, avl_node_t *node, const void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
@@ -448,7 +448,7 @@ avl_node_t *avl_item_insert_before(avl_tree_t *avltree, avl_node_t *node, void *
 	return NULL;
 }
 
-avl_node_t *avl_item_insert_after(avl_tree_t *avltree, avl_node_t *node, void *item) {
+avl_node_t *avl_item_insert_after(avl_tree_t *avltree, avl_node_t *node, const void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
@@ -460,7 +460,7 @@ avl_node_t *avl_item_insert_after(avl_tree_t *avltree, avl_node_t *node, void *i
 	return NULL;
 }
 
-avl_node_t *avl_item_insert_left(avl_tree_t *avltree, void *item) {
+avl_node_t *avl_item_insert_left(avl_tree_t *avltree, const void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
@@ -472,7 +472,7 @@ avl_node_t *avl_item_insert_left(avl_tree_t *avltree, void *item) {
 	return NULL;
 }
 
-avl_node_t *avl_item_insert_right(avl_tree_t *avltree, void *item) {
+avl_node_t *avl_item_insert_right(avl_tree_t *avltree, const void *item) {
 	avl_node_t *newnode;
 
 	if(!avltree)
