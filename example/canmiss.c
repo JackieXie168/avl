@@ -28,8 +28,9 @@ typedef struct overtocht_info {
 	unsigned int to, ko, mo;
 } overtocht_info_t;
 
-static unsigned int totaal = 4;
-static unsigned int kannibalen = 2;
+static unsigned int totaal = 6;
+static unsigned int kannibalen = 3;
+static unsigned int boot = 2;
 
 static const toestand_t toestand_0 = {{0}};
 
@@ -101,7 +102,7 @@ static bool overtocht_info(overtocht_info_t *oi, const toestand_t *van, const to
 		mo = vi.ml - ni.ml;
 	}
 
-	if(to == 0 || to > 2)
+	if(to == 0 || to > boot)
 		return false; /* constraint! */
 
 	if(oi) {
@@ -154,7 +155,7 @@ static void toon_overtocht(const toestand_t *van, const toestand_t *naar) {
 		putchar('K');
 	for(; i < oi.to; i++)
 		putchar('M');
-	for(; i < 2; i++)
+	for(; i < boot; i++)
 		putchar('_');
 
 	printf("/ %s\n", dir);
