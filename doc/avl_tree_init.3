@@ -40,7 +40,7 @@ allocates an avl_tree_t and initializes it using
 .Fn avl_tree_init .
 .Pp
 .Fn avl_tree_clear
-reinitializes the tree structure without touching the ordering/freeing
+reinitializes the tree structure without calling any ordering/freeing
 functions, orphaning any tree nodes that it contains.
 .Sh RETURN VALUES
 Returns the value of
