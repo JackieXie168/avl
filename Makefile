@@ -47,7 +47,7 @@ src/libavl.la: src/avl.lo
 	$(LIBTOOL) --mode=link $(LN) $(LDFLAGS) -rpath $(libdir) -version-number 2:0 $^ -o $@
 
 clean:
-	$(LIBTOOL) --mode=clean $(RM) $(LIBRARIES) $(PROGRAMS) src/*.lo example/*.o
+	$(LIBTOOL) --mode=clean $(RM) $(LIBRARIES) $(PROGRAMS) src/*.lo example/*.lo
 
 install: all
 	$(INSTALL) -d $(DESTDIR)$(includedir)

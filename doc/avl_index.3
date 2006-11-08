@@ -1,0 +1,45 @@
+.Dd 2006-11-08
+.Dt AVL_INDEX 3
+.Os libavl
+.Sh NAME
+.Nm avl_index ,
+.Nm avl_at ,
+.Nm avl_count
+.Nd functions to address nodes in an augmented AVL tree by numerical index
+.Sh LIBRARY
+.Lb libavl
+.Sh SYNOPSIS
+.In avl.h
+.Ft unsigned long
+.Fn avl_count "avl_tree_t *tree"
+.Ft unsigned long
+.Fn avl_index "avl_node_t *node"
+.Ft avl_tree_t *
+.Fn avl_at "avl_tree_t *" "unsigned long idx"
+.Sh DESCRIPTION
+.Fn avl_count
+returns the number of nodes in
+.Fa tree .
+.Pp
+.Fn avl_index
+returns the position of
+.Fa node
+in its containing tree (counting starts at 0).
+.Pp
+.Fn avl_at
+returns the
+.Fa idx
+th node in the tree (counting starts at 0).
+.Sh RETURN VALUES
+.Fn avl_index
+and
+.Fn avl_count
+return their result as an unsigned long integer.
+.Pp
+.Fn avl_at
+returns the node or
+.Dv NULL
+if the requested index is greater than or equal to the number of nodes
+in the tree.
+.Sh SEE ALSO
+.Xr avl 5
