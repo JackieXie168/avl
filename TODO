@@ -4,15 +4,14 @@ $URL$
 - manpages for:
 
   avl_fixup
-  avl_count
-  avl_at
-  avl_index
 
   avl_cmp_*
   AVL_CMP macros
   AVL_INIT macros
   _0 consts
   structs
+
+  avl
 
 - changelog
 
