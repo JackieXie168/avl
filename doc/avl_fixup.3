@@ -1,0 +1,35 @@
+.Dd 2008-09-15
+.Dt AVL_TREE_FIXUP 3
+.Os libavl
+.Sh NAME
+.Nm avl_fixup
+.Nd repair a moved node
+.Sh LIBRARY
+.Lb libavl
+.Sh SYNOPSIS
+.In avl.h
+.Ft void *
+.Fn avl_fixup "avl_tree_t *tree" "avl_node_t *node"
+.Sh DESCRIPTION
+If a node has moved to a different location in memory, you can repair
+the AVL tree structure using this function.
+This function will fail (segfault, probably) if other nodes have moved as well.
+In other words, you can only move one node at once.
+Returns immediately if the value of
+.Ar node
+or
+.Ar tree
+is
+.Dv NULL .
+It is safe to call this function on a node that has not been moved.
+.Sh RETURN VALUES
+Returns the previous location of this node or
+.Dv NULL
+if either of the arguments was
+.Dv NULL .
+.Sh ERRORS
+This function does not affect the value of
+.Dv errno .
+.Sh SEE ALSO
+.Xr avl 5 ,
+.Xr realloc 3

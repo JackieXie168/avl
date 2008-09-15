@@ -3,8 +3,6 @@ $URL$
 
 - manpages for:
 
-  avl_fixup
-
   avl_cmp_*
   AVL_CMP macros
   AVL_INIT macros
