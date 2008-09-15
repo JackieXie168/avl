@@ -64,9 +64,9 @@ typedef void (*avl_freeitem_t)(void *);
 #define AVL_CMP(a,b) ((a) < (b) ? -1 : (a) > (b) ? 1 : 0)
 
 #if defined(AVL_COUNT) && defined(AVL_DEPTH)
-#define AVL_NODE_INIT(item) { 0, 0, 0, 0, 0, (item), 0, 0 }
+#define AVL_NODE_INITIALIZER(item) { 0, 0, 0, 0, 0, (item), 0, 0 }
 #else
-#define AVL_NODE_INIT(item) { 0, 0, 0, 0, 0, (item), 0 }
+#define AVL_NODE_INITIALIZER(item) { 0, 0, 0, 0, 0, (item), 0 }
 #endif
 
 typedef struct avl_node_t {
@@ -86,7 +86,7 @@ typedef struct avl_node_t {
 
 extern const avl_node_t avl_node_0;
 
-#define AVL_TREE_INIT(cmp,free) { 0, 0, 0, (cmp), (free) }
+#define AVL_TREE_INITIALIZER(cmp,free) { 0, 0, 0, (cmp), (free) }
 
 typedef struct avl_tree_t {
 	avl_node_t *head;
@@ -298,6 +298,7 @@ AVL_CMP_DECLARE_NAMED(unsigned_short, unsigned short)
 AVL_CMP_DECLARE_NAMED(unsigned_int, unsigned int)
 AVL_CMP_DECLARE_NAMED(unsigned_long, unsigned long)
 AVL_CMP_DECLARE_NAMED(pointer, void *)
+#define avl_ptr_cmp avl_pointer_cmp
 
 #ifdef __GNUC__
 __extension__
