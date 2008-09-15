@@ -3,20 +3,15 @@ LDCONFIG ?= /sbin/ldconfig
 LIBTOOL ?= /usr/bin/libtool --quiet
 #CC = /opt/tendra/bin/tcc -I/usr/include -Yc99 -Xs -D__gnuc_va_list=int
 #LN = /opt/tendra/bin/tcc
-CC = gcc
 LN = gcc
 
 # You may select DEPTHs (no indexing), COUNTs (slower) or both (more memory).
 #CPPFLAGS += -DAVL_COUNT -DAVL_DEPTH
 
-# Some suggestions: (-mtune= keeps the code i386 compatible)
-#CFLAGS = -O2 -fomit-frame-pointer -pipe -march=i586 -Wall -g
-CFLAGS = -Os -pipe -march=athlon-xp -Wall -Werror -ansi -pedantic
-#CFLAGS = -O6 -fomit-frame-pointer -pipe -march=athlon-xp -Wall -ansi -pedantic
-LDFLAGS = -s
-#LDFLAGS = -g -pg
+include ../Makeconf
 
 #CFLAGS ?= -O2 -fomit-frame-pointer -pipe -mtune=i686 -w
+#CFLAGS += $(FASCIST) -DCAST_QUAL_KLUDGES
 CFLAGS += -DHAVE_C99 -DHAVE_POSIX -Isrc
 
 prefix ?= /usr/local

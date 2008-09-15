@@ -52,6 +52,29 @@ static void avl_rebalance(avl_tree_t *, avl_node_t *);
 const avl_node_t avl_node_0 = {0};
 const avl_tree_t avl_tree_0 = {0};
 
+#ifdef CAST_QUAL_KLUDGES
+static avl_node_t *avl_const_node(const avl_node_t *node) {
+	union {
+		const avl_node_t *c;
+		avl_node_t *v;
+	} u;
+	u.c = node;
+	return u.v;
+}
+
+static void *avl_const_item(const void *item) {
+	union {
+		const void *c;
+		void *v;
+	} u;
+	u.c = item;
+	return u.v;
+}
+#else
+#define avl_const_node(x) ((avl_node_t *)(x))
+#define avl_const_item(x) ((void *)(x))
+#endif
+
 static int avl_check_balance(avl_node_t *avlnode) {
 #ifdef AVL_DEPTH
 	int d;
@@ -227,7 +250,7 @@ avl_node_t *avl_search_left(const avl_tree_t *tree, const void *item, int *exact
 	node = avl_search_rightish(tree, item, exact);
 
 	if(*exact)
-		return (avl_node_t *)avl_search_leftmost_equal(tree, node, item);
+		return avl_const_node(avl_search_leftmost_equal(tree, node, item));
 
 	if(node)
 		return node->next;
@@ -246,7 +269,7 @@ avl_node_t *avl_search_right(const avl_tree_t *tree, const void *item, int *exac
 	if(*exact)
 		node = avl_search_rightmost_equal(tree, node, item);
 
-	return (avl_node_t *)node;
+	return avl_const_node(node);
 }
 
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
@@ -315,7 +338,7 @@ static void avl_node_clear(avl_node_t *newnode) {
 
 avl_node_t *avl_node_init(avl_node_t *newnode, const void *item) {
 	if(newnode)
-		newnode->item = (void *)item;
+		newnode->item = avl_const_item(item);
 	return newnode;
 }
 
