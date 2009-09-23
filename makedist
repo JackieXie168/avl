@@ -1,0 +1,40 @@
+#! /bin/posh
+
+# $Id$
+# $URL$
+
+set -ex
+
+fgrep -q 435aaec721a95878c2bd5b73e403a97f9005f61f bootstrap
+
+build=$(mktemp -d)
+trap 'rm -rf $build' EXIT
+
+svn up
+svn export . $build/src
+svn2cl -o $build/src/ChangeLog
+
+cat >$build/src/Makefile.am <<EOF
+lib_LTLIBRARIES = libavl.la
+libavl_la_SOURCES = $(echo src/*)
+dist_man_MANS = $(echo doc/*.[0-9])
+EXTRA_DIST = makedist
+EOF
+
+(
+	cd $build/src
+
+	aclocal
+	autoconf
+	automake --add-missing
+	sh configure
+
+	make -s distcheck
+
+	echo print-archives: >>Makefile
+	echo '	@echo $(DIST_ARCHIVES)' >>Makefile
+	mkdir $build/archives
+	mv $(make -s print-archives) $build/archives/
+)
+
+cp -a $build/archives/* .
