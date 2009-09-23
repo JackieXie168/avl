@@ -5,7 +5,7 @@
 
 set -ex
 
-fgrep -q 435aaec721a95878c2bd5b73e403a97f9005f61f bootstrap
+fgrep -q 435aaec721a95878c2bd5b73e403a97f9005f61f makedist
 
 build=$(mktemp -d)
 trap 'rm -rf $build' EXIT
@@ -24,6 +24,8 @@ EOF
 
 (
 	cd $build/src
+
+	cp -a /usr/share/libtool/config/ltmain.sh .
 
 	aclocal
 	autoconf
