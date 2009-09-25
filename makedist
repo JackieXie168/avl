@@ -17,6 +17,7 @@ svn2cl -o $build/src/ChangeLog
 cat >$build/src/Makefile.am <<EOF
 lib_LTLIBRARIES = libavl.la
 libavl_la_SOURCES = $(echo src/*)
+libavl_la_LDFLAGS = -version-info 2:0:0
 include_HEADERS = src/avl.h
 dist_man_MANS = $(echo doc/*.[0-9])
 EXTRA_DIST = makedist
@@ -25,7 +26,7 @@ EOF
 (
 	cd $build/src
 
-	cp -a /usr/share/libtool/config/ltmain.sh .
+	find /usr/share/libtool -name ltmain.sh -exec cp -v {} . \;
 
 	aclocal
 	autoconf
