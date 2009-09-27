@@ -30,11 +30,14 @@
 #ifndef _AVL_H
 #define _AVL_H
 
-#ifdef HAVE_C99
+#define AVL_HAVE_C99 @have_c99@
+#define AVL_HAVE_POSIX @have_posix@
+
+#if AVL_HAVE_C99
 #include <stdint.h>
 #endif
 
-#ifdef HAVE_POSIX
+#if AVL_HAVE_POSIX
 #include <time.h>
 #include <unistd.h>
 #include <sys/time.h>
@@ -309,7 +312,7 @@ __extension__
 AVL_CMP_DECLARE_NAMED(long_double, long double)
 #endif
 
-#ifdef HAVE_C99
+#if AVL_HAVE_C99
 AVL_CMP_DECLARE_T(int8)
 AVL_CMP_DECLARE_T(uint8)
 AVL_CMP_DECLARE_T(int16)
@@ -336,7 +339,7 @@ AVL_CMP_DECLARE_T(int_least64)
 AVL_CMP_DECLARE_T(uint_least64)
 #endif
 
-#ifdef HAVE_POSIX
+#if AVL_HAVE_POSIX
 AVL_CMP_DECLARE_T(time)
 AVL_CMP_DECLARE_T(size)
 AVL_CMP_DECLARE_T(ssize)

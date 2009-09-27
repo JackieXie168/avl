@@ -31,4 +31,9 @@ AC_STRUCT_TM
 AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 
-AC_OUTPUT([Makefile])
+# These need to become real tests
+AC_SUBST(have_c99, 1)
+AC_SUBST(have_posix, 1)
+
+AC_CONFIG_FILES([Makefile src/avl.h])
+AC_OUTPUT
