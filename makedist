@@ -20,7 +20,7 @@ libavl_la_SOURCES = $(echo src/*)
 libavl_la_LDFLAGS = -version-info 2:0:0
 include_HEADERS = src/avl.h
 dist_man_MANS = $(echo doc/*.[0-9])
-#EXTRA_DIST = makedist COPYING.LGPL example
+EXTRA_DIST = makedist COPYING.LGPL example
 EOF
 
 (
