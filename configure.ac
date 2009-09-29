@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(avl, 2.0.0, wsl-avl-bugs@fruit.je)
+AC_INIT(libavl, 2.0.0, wsl-avl-bugs@fruit.je)
 
 AM_INIT_AUTOMAKE()
 
