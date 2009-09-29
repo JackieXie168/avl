@@ -145,7 +145,7 @@ static int toestand_cmp(const toestand_t *a, const toestand_t *b) {
 	return avl_unsigned_int_cmp(b->totaal, a->totaal);
 }
 
-static avl_tree_t toestanden = AVL_TREE_INIT((avl_compare_t)toestand_cmp, NULL);
+static avl_tree_t toestanden = AVL_TREE_INITIALIZER((avl_compare_t)toestand_cmp, NULL);
 
 static void toon_toestand(const toestand_t *t) {
 	unsigned int i;
