@@ -65,13 +65,9 @@ static void readinto(avl_tree_t *t, char *fname) {
 	fclose(f);
 }
 
-static int stricmp(const char *a, const char *b) {
-	return *a - *b;
-}
-
 int main(int argc, char **argv) {
-	avl_tree_t u = AVL_TREE_INIT((avl_compare_t)stricmp, NULL);
-	avl_tree_t t = AVL_TREE_INIT((avl_compare_t)stricmp, NULL);
+	avl_tree_t u = AVL_TREE_INITIALIZER((avl_compare_t)strcmp, NULL);
+	avl_tree_t t = AVL_TREE_INITIALIZER((avl_compare_t)strcmp, NULL);
 	avl_node_t *c;
 
 	if(argc != 3) {
