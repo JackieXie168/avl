@@ -1,0 +1,11 @@
+Copyright (c) 1998  Michael H. Buselli <cosine@cosine.org>
+Copyright (c) 2000-2009  Wessel Dankers <wsl@fruit.je>
+
+Original by Michael H. Buselli <cosine@cosine.org>.
+
+Modified by Wessel Dankers <wsl@fruit.je> to add a bunch of bloat
+to the sourcecode, change the interface and replace a few bugs.
+Mail him if you find any new bugs.
+
+$Id$
+$URL$

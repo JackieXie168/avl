@@ -3,14 +3,11 @@ $URL$
 
 - manpages for:
 
-  avl_cmp_*
   AVL_CMP macros
   AVL_INIT macros
   _0 consts
   structs
 
   avl
-
-- changelog
 
 - avl_malloc + avl_free

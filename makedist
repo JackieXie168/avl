@@ -20,13 +20,15 @@ libavl_la_SOURCES = $(echo src/*)
 libavl_la_LDFLAGS = -version-info 2:0:0
 include_HEADERS = src/avl.h
 dist_man_MANS = $(echo doc/*.[0-9])
-EXTRA_DIST = makedist
+EXTRA_DIST = makedist COPYING.GPL COPYING.LGPL
 EOF
 
 (
 	cd $build/src
 
 	find /usr/share/libtool -name ltmain.sh -exec cp -v {} . \;
+	cp -av /usr/share/common-licenses/LGPL-3 COPYING.LGPL
+	cp -av /usr/share/common-licenses/GPL-3 COPYING.GPL
 
 	aclocal
 	autoconf
