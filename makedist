@@ -8,7 +8,7 @@ set -ex
 fgrep -q 435aaec721a95878c2bd5b73e403a97f9005f61f makedist
 
 build=$(mktemp -d)
-trap 'rm -rf $build' EXIT
+trap 'chmod -R u+rwX -- "$build";rm -rf -- "$build"' EXIT
 
 svn up
 svn export . $build/src
@@ -20,15 +20,15 @@ libavl_la_SOURCES = $(echo src/*)
 libavl_la_LDFLAGS = -version-info 2:0:0
 include_HEADERS = src/avl.h
 dist_man_MANS = $(echo doc/*.[0-9])
-EXTRA_DIST = makedist COPYING.GPL COPYING.LGPL
+#EXTRA_DIST = makedist COPYING.LGPL example
 EOF
 
 (
 	cd $build/src
 
 	find /usr/share/libtool -name ltmain.sh -exec cp -v {} . \;
+	cp -av /usr/share/common-licenses/GPL-3 COPYING
 	cp -av /usr/share/common-licenses/LGPL-3 COPYING.LGPL
-	cp -av /usr/share/common-licenses/GPL-3 COPYING.GPL
 
 	aclocal
 	autoconf
