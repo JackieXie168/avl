@@ -19,8 +19,9 @@ lib_LTLIBRARIES = libavl.la
 libavl_la_SOURCES = $(echo src/*)
 libavl_la_LDFLAGS = -version-info 2:0:0
 include_HEADERS = src/avl.h
-dist_man_MANS = $(echo doc/*.[0-9])
-EXTRA_DIST = makedist COPYING.LGPL example
+dist_man_MANS = $(echo doc/*)
+nobase_dist_doc_DATA = $(echo example/*)
+EXTRA_DIST = makedist
 EOF
 
 (
@@ -28,7 +29,7 @@ EOF
 
 	find /usr/share/libtool -name ltmain.sh -exec cp -v {} . \;
 	cp -av /usr/share/common-licenses/GPL-3 COPYING
-	cp -av /usr/share/common-licenses/LGPL-3 COPYING.LGPL
+	cp -av /usr/share/common-licenses/LGPL-3 COPYING.LESSER
 
 	aclocal
 	autoconf
