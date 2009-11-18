@@ -9,89 +9,89 @@
 .Sh SYNOPSIS
 .In avl.h
 .Ft int
-.Fn avl_cmp_float "float a" "float b"
+.Fn avl_float_cmp "float a" "float b"
 .Ft int
-.Fn avl_cmp_double "double a" "double b"
+.Fn avl_double_cmp "double a" "double b"
 .Ft int
-.Fn avl_cmp_char "char a" "char b"
+.Fn avl_char_cmp "char a" "char b"
 .Ft int
-.Fn avl_cmp_short "short a" "short b"
+.Fn avl_short_cmp "short a" "short b"
 .Ft int
-.Fn avl_cmp_int "int a" "int b"
+.Fn avl_int_cmp "int a" "int b"
 .Ft int
-.Fn avl_cmp_long "long a" "long b"
+.Fn avl_long_cmp "long a" "long b"
 .Ft int
-.Fn avl_cmp_int8 "int8_t a" "int8_t b"
+.Fn avl_int8_cmp "int8_t a" "int8_t b"
 .Ft int
-.Fn avl_cmp_uint8 "uint8_t a" "uint8_t b"
+.Fn avl_uint8_cmp "uint8_t a" "uint8_t b"
 .Ft int
-.Fn avl_cmp_int16 "int16_t a" "int16_t b"
+.Fn avl_int16_cmp "int16_t a" "int16_t b"
 .Ft int
-.Fn avl_cmp_uint16 "uint16_t a" "uint16_t b"
+.Fn avl_uint16_cmp "uint16_t a" "uint16_t b"
 .Ft int
-.Fn avl_cmp_int32 "int32_t a" "int32_t b"
+.Fn avl_int32_cmp "int32_t a" "int32_t b"
 .Ft int
-.Fn avl_cmp_uint32 "uint32_t a" "uint32_t b"
+.Fn avl_uint32_cmp "uint32_t a" "uint32_t b"
 .Ft int
-.Fn avl_cmp_int64 "int64_t a" "int64_t b"
+.Fn avl_int64_cmp "int64_t a" "int64_t b"
 .Ft int
-.Fn avl_cmp_uint64 "uint64_t a" "uint64_t b"
+.Fn avl_uint64_cmp "uint64_t a" "uint64_t b"
 .Ft int
-.Fn avl_cmp_int_fast8 "int_fast8_t a" "int_fast8_t b"
+.Fn avl_int_fast8_cmp "int_fast8_t a" "int_fast8_t b"
 .Ft int
-.Fn avl_cmp_uint_fast8 "uint_fast8_t a" "uint_fast8_t b"
+.Fn avl_uint_fast8_cmp "uint_fast8_t a" "uint_fast8_t b"
 .Ft int
-.Fn avl_cmp_int_fast16 "int_fast16_t a" "int_fast16_t b"
+.Fn avl_int_fast16_cmp "int_fast16_t a" "int_fast16_t b"
 .Ft int
-.Fn avl_cmp_uint_fast16 "uint_fast16_t a" "uint_fast16_t b"
+.Fn avl_uint_fast16_cmp "uint_fast16_t a" "uint_fast16_t b"
 .Ft int
-.Fn avl_cmp_int_fast32 "int_fast32_t a" "int_fast32_t b"
+.Fn avl_int_fast32_cmp "int_fast32_t a" "int_fast32_t b"
 .Ft int
-.Fn avl_cmp_uint_fast32 "uint_fast32_t a" "uint_fast32_t b"
+.Fn avl_uint_fast32_cmp "uint_fast32_t a" "uint_fast32_t b"
 .Ft int
-.Fn avl_cmp_int_fast64 "int_fast64_t a" "int_fast64_t b"
+.Fn avl_int_fast64_cmp "int_fast64_t a" "int_fast64_t b"
 .Ft int
-.Fn avl_cmp_uint_fast64 "uint_fast64_t a" "uint_fast64_t b"
+.Fn avl_uint_fast64_cmp "uint_fast64_t a" "uint_fast64_t b"
 .Ft int
-.Fn avl_cmp_int_least8 "int_least8_t a" "int_least8_t b"
+.Fn avl_int_least8_cmp "int_least8_t a" "int_least8_t b"
 .Ft int
-.Fn avl_cmp_uint_least8 "uint_least8_t a" "uint_least8_t b"
+.Fn avl_uint_least8_cmp "uint_least8_t a" "uint_least8_t b"
 .Ft int
-.Fn avl_cmp_int_least16 "int_least16_t a" "int_least16_t b"
+.Fn avl_int_least16_cmp "int_least16_t a" "int_least16_t b"
 .Ft int
-.Fn avl_cmp_uint_least16 "uint_least16_t a" "uint_least16_t b"
+.Fn avl_uint_least16_cmp "uint_least16_t a" "uint_least16_t b"
 .Ft int
-.Fn avl_cmp_int_least32 "int_least32_t a" "int_least32_t b"
+.Fn avl_int_least32_cmp "int_least32_t a" "int_least32_t b"
 .Ft int
-.Fn avl_cmp_uint_least32 "uint_least32_t a" "uint_least32_t b"
+.Fn avl_uint_least32_cmp "uint_least32_t a" "uint_least32_t b"
 .Ft int
-.Fn avl_cmp_int_least64 "int_least64_t a" "int_least64_t b"
+.Fn avl_int_least64_cmp "int_least64_t a" "int_least64_t b"
 .Ft int
-.Fn avl_cmp_uint_least64 "uint_least64_t a" "uint_least64_t b"
+.Fn avl_uint_least64_cmp "uint_least64_t a" "uint_least64_t b"
 .Ft int
-.Fn avl_cmp_time "time_t a" "time_t b"
+.Fn avl_time_cmp "time_t a" "time_t b"
 .Ft int
-.Fn avl_cmp_size "size_t a" "size_t b"
+.Fn avl_size_cmp "size_t a" "size_t b"
 .Ft int
-.Fn avl_cmp_ssize "ssize_t a" "ssize_t b"
+.Fn avl_ssize_cmp "ssize_t a" "ssize_t b"
 .Ft int
-.Fn avl_cmp_socklen "socklen_t a" "socklen_t b"
+.Fn avl_socklen_cmp "socklen_t a" "socklen_t b"
 .Ft int
-.Fn avl_cmp_unsigned_char "unsigned char a" "unsigned char b"
+.Fn avl_unsigned_char_cmp "unsigned char a" "unsigned char b"
 .Ft int
-.Fn avl_cmp_unsigned_short "unsigned short a" "unsigned short b"
+.Fn avl_unsigned_short_cmp "unsigned short a" "unsigned short b"
 .Ft int
-.Fn avl_cmp_unsigned_int "unsigned int a" "unsigned int b"
+.Fn avl_unsigned_int_cmp "unsigned int a" "unsigned int b"
 .Ft int
-.Fn avl_cmp_unsigned_long "unsigned long a" "unsigned long b"
+.Fn avl_unsigned_long_cmp "unsigned long a" "unsigned long b"
 .Ft int
-.Fn avl_cmp_pointer "void *a" "void *b"
+.Fn avl_pointer_cmp "void *a" "void *b"
 .Ft int
-.Fn avl_cmp_long_long "long long a" "long long b"
+.Fn avl_long_long_cmp "long long a" "long long b"
 .Ft int
-.Fn avl_cmp_unsigned_long_long "unsigned long long a" "unsigned long long b"
+.Fn avl_unsigned_long_long_cmp "unsigned long long a" "unsigned long long b"
 .Ft int
-.Fn avl_cmp_long_double "long double a" "long double b"
+.Fn avl_long_double_cmp "long double a" "long double b"
 .Sh DESCRIPTION
 These functions are intended to be passed to
 .Fn avl_tree_init
