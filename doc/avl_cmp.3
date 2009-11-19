@@ -1,4 +1,4 @@
-.Dd 2008-09-15
+.Dd 2009-11-19
 .Dt AVL_CMP 3
 .Os libavl
 .Sh NAME
@@ -85,13 +85,15 @@
 .Ft int
 .Fn avl_unsigned_long_cmp "unsigned long a" "unsigned long b"
 .Ft int
-.Fn avl_pointer_cmp "void *a" "void *b"
-.Ft int
 .Fn avl_long_long_cmp "long long a" "long long b"
 .Ft int
 .Fn avl_unsigned_long_long_cmp "unsigned long long a" "unsigned long long b"
 .Ft int
 .Fn avl_long_double_cmp "long double a" "long double b"
+.Ft int
+.Fn avl_pointer_cmp "void *a" "void *b"
+.Ft int
+.Fn avl_timeval_cmp "const struct timeval *a" "const struct timeval *b"
 .Sh DESCRIPTION
 These functions are intended to be passed to
 .Fn avl_tree_init
@@ -112,8 +114,8 @@ and return 1 if
 was found to be greater than
 .Fa b .
 .Sh ERRORS
-This function does not affect the value of
+These functions do not affect the value of
 .Dv errno .
 .Sh SEE ALSO
-.Xr avl 5 ,
+.Xr avl 7 ,
 .Xr avl_tree_init 3

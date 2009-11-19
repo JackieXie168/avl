@@ -1,0 +1,64 @@
+.Dd 2009-11-19
+.Dt AVL_NODE_INIT 3
+.Os libavl
+.Sh NAME
+.Nm avl_node_init ,
+.Nm avl_node_alloc
+.Nd functions to allocate and initialize an augmented AVL node node
+.Sh LIBRARY
+.Lb libavl
+.Sh SYNOPSIS
+.In avl.h
+.Ft avl_node_t *
+.Fn avl_node_init "avl_node_t *node" "void *item"
+.Ft avl_node_t *
+.Fn avl_node_alloc "void *item"
+.Sh DESCRIPTION
+.Fn avl_node_init
+initializes the structure pointed to by
+.Fa node
+for use with other avl functions.
+The item in this node will set using the supplied
+.Fa item
+argument (which may be
+.Dv NULL ) .
+.Pp
+.Fn avl_node_alloc
+allocates an avl_node_t using
+.Fn malloc
+and initializes it using
+.Fn avl_node_init .
+If you're going to insert this element into a tree straight after
+allocating it, you may want to look at
+.Fn avl_item_insert
+instead.
+.Sh RETURN VALUES
+Returns the value of
+.Fa node
+(even if it's
+.Dv NULL ) .
+.Sh ERRORS
+The
+.Fn avl_node_alloc
+function can fail if and only if
+.Fn malloc
+fails.
+If
+.Fn malloc
+fails, it sets
+.Dv errno
+appropriately. In particular, it may return
+.Dv NULL
+and set
+.Dv errno
+to:
+.Bl -tag -width Er
+.It Er ENOMEM
+Out of memory.
+.El
+.Sh SEE ALSO
+.Xr avl 7 ,
+.Xr avl_item_insert 3 ,
+.Xr malloc 3 ,
+.Xr free 3 ,
+.Xr strcmp 3
