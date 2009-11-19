@@ -4,7 +4,7 @@
 .Sh NAME
 .Nm avl_node_init ,
 .Nm avl_node_alloc
-.Nd functions to allocate and initialize an augmented AVL node node
+.Nd functions to allocate and initialize an augmented AVL node
 .Sh LIBRARY
 .Lb libavl
 .Sh SYNOPSIS
@@ -13,6 +13,9 @@
 .Fn avl_node_init "avl_node_t *node" "void *item"
 .Ft avl_node_t *
 .Fn avl_node_alloc "void *item"
+.Fn AVL_NODE_INITIALIZER "void *item"
+.Ft const avl_node
+.Dv avl_node_0 ;
 .Sh DESCRIPTION
 .Fn avl_node_init
 initializes the structure pointed to by
@@ -32,6 +35,21 @@ If you're going to insert this element into a tree straight after
 allocating it, you may want to look at
 .Fn avl_item_insert
 instead.
+.Pp
+.Fn AVL_NODE_INITIALIZER
+is a macro that can be used to initialize node structures as they are
+declared. For example:
+.Bd -literal -offset indent
+avl_node_t node = AVL_NODE_INITIALIZER("foo");
+.Ed
+.Pp
+.Dv avl_node_0
+is a constant that can be used as a blank template for node structures.
+For example:
+.Bd -literal -offset indent
+*node = avl_node_0;
+node->item = "foo";
+.Ed
 .Sh RETURN VALUES
 Returns the value of
 .Fa node

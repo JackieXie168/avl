@@ -1,0 +1,99 @@
+.Dd 2009-11-19
+.Dt AVL 7
+.Os libavl
+.Sh NAME
+.Nm avl
+.Nd AVL tree library
+.Sh LIBRARY
+.Lb libavl
+.Sh SYNOPSIS
+.In avl.h
+.Bd -literal
+typedef struct avl_tree_t {
+    avl_node_t *head;
+    avl_node_t *tail;
+    avl_node_t *top;
+    avl_compare_t cmp;
+    avl_freeitem_t freeitem;
+} avl_tree_t;
+
+typedef struct avl_node_t {
+    struct avl_node_t *next;
+    struct avl_node_t *prev;
+    struct avl_node_t *parent;
+    struct avl_node_t *left;
+    struct avl_node_t *right;
+    void *item;
+    unsigned long count;
+    unsigned char depth;
+} avl_node_t;
+.Ed
+.Sh DESCRIPTION
+.Nm libavl
+is a generic library for allocating and manipulating AVL balanced trees.
+.Pp
+For detailed descriptions of the available functions, see:
+.Bl -tag -compact -width xxxxxxxxxxxxxxxxxxxxx
+.It Xr avl_cmp 3
+comparing various datatypes
+.It Xr avl_delete 3
+removing nodes from a tree
+.It Xr avl_fixup 3
+repairing moved nodes
+.It Xr avl_index 3
+address nodes in a tree by numerical index
+.It Xr avl_insert 3
+add nodes to a tree
+.It Xr avl_item_insert 3
+insert items into a tree
+.It Xr avl_node_init 3
+allocate and initialize nodes
+.It Xr avl_search 3
+search a tree
+.It Xr avl_tree_free 3
+empty and free trees
+.It Xr avl_tree_init 3
+allocating and freeing trees
+.El
+.Sh EXAMPLES
+.Ss Basic usage with memory management:
+.Bd -literal
+#include <avl.h>
+
+avl_tree_t *tree;
+avl_node_t *node;
+
+tree = avl_tree_alloc(strcmp, NULL);
+avl_item_insert(tree, "foo");
+avl_item_delete(tree, "foo");
+
+node = avl_item_insert(tree, "bar");
+avl_node_delete(tree, node);
+
+avl_tree_delete(tree);
+.Ed
+.Pp
+.Ss Basic usage without memory management:
+.Bd -literal
+#include <avl.h>
+
+avl_tree_t tree;
+avl_node_t node;
+
+avl_init_tree(&tree, strcmp, NULL);
+avl_init_node(&node, "foo");
+
+avl_insert_node(&tree, &node);
+avl_unlink_node(&tree, &node);
+.Ed
+.Sh SEE ALSO
+.Xr avl_cmp 3 ,
+.Xr avl_delete 3 ,
+.Xr avl_fixup 3 ,
+.Xr avl_index 3 ,
+.Xr avl_insert 3 ,
+.Xr avl_item_insert 3 ,
+.Xr avl_node_init 3 ,
+.Xr avl_search 3 ,
+.Xr avl_tree_free 3 ,
+.Xr avl_tree_init 3
