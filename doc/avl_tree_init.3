@@ -4,18 +4,24 @@
 .Sh NAME
 .Nm avl_tree_init ,
 .Nm avl_tree_alloc ,
-.Nm avl_tree_clear
-.Nd functions to allocate and initialize an augmented AVL tree
+.Nm avl_tree_clear ,
+.Nm avl_tree_free ,
+.Nm avl_tree_purge
+.Nd functions for augmented AVL tree lifecycle management
 .Sh LIBRARY
 .Lb libavl
 .Sh SYNOPSIS
 .In avl.h
 .Ft avl_tree_t *
-.Fn avl_tree_init "avl_tree_t *tree" "avl_compare_t cmp" "avl_freeitem_t free"
+.Fn avl_tree_init "avl_tree_t *tree" "avl_compare_t cmp" "avl_freeitem_t freeitem"
 .Ft avl_tree_t *
 .Fn avl_tree_alloc "avl_compare_t cmp" "avl_freeitem_t free"
 .Ft avl_tree_t *
 .Fn avl_tree_clear "avl_tree_t *tree"
+.Ft void
+.Fn avl_tree_free "avl_tree_t *tree"
+.Ft avl_tree_t *
+.Fn avl_tree_purge "avl_tree_t *"
 .Sh DESCRIPTION
 .Fn avl_tree_init
 initializes the structure pointed to by
@@ -29,7 +35,7 @@ The elements in this tree will be ordered using the
 (which may be
 .Dv NULL
 for unsorted, ordered lists) and if
-.Fa free
+.Fa freeitem
 is not
 .Dv NULL
 then the delete functions in the avl library will use this to free any memory
@@ -41,9 +47,23 @@ allocates an avl_tree_t and initializes it using
 .Pp
 .Fn avl_tree_clear
 reinitializes the tree structure without calling any ordering/freeing
-functions, orphaning any tree nodes that it contains.
+functions, effectively orphaning any tree nodes that it contains.
+.Pp
+.Fn avl_tree_purge
+reinitializes the tree structure, calling all
+.Fa freeitem
+functions and calling
+.Fn free
+on all nodes.
+.Pp
+.Fn avl_tree_free
+is like
+.Fn avl_tree_purge
+but also calls
+.Fn free
+on the tree itself.
 .Sh RETURN VALUES
-Returns the value of
+Those functions that return anything return the value of
 .Fa tree
 (even if it's
 .Dv NULL ) .
@@ -67,7 +87,6 @@ to:
 Out of memory.
 .El
 .Sh SEE ALSO
-.Xr avl_tree_free 3 ,
-.Xr avl_tree_purge 3 ,
 .Xr malloc 3 ,
+.Xr free 3 ,
 .Xr strcmp 3
