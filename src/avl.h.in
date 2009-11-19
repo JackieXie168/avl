@@ -135,6 +135,11 @@ extern avl_tree_t *avl_tree_clear(avl_tree_t *);
  * O(n) */
 extern avl_tree_t *avl_tree_purge(avl_tree_t *);
 
+/* Allocates and initializes memory for use as a node.
+ * Returns the value of avlnode (or NULL if the allocation failed).
+ * O(1) */
+extern avl_node_t *avl_node_alloc(const void *item);
+
 /* Initializes memory for use as a node.
  * Returns the value of avlnode (even if it's NULL).
  * O(1) */

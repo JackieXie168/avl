@@ -347,6 +347,14 @@ avl_node_t *avl_node_init(avl_node_t *newnode, const void *item) {
 	return newnode;
 }
 
+avl_node_t *avl_node_alloc(const void *item) {
+	avl_node_t *newnode;
+	newnode = malloc(sizeof *newnode);
+	if(newnode)
+		newnode->item = avl_const_item(item);
+	return newnode;
+}
+
 /* Insert a node in an empty tree. If avlnode is NULL, the tree will be
  * cleared and ready for re-use.
  * If the tree is not empty, the old nodes are left dangling.
