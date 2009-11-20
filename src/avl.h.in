@@ -279,6 +279,31 @@ extern avl_node_t *avl_search_rightish(const avl_tree_t *, const void *item, int
  * O(lg n) */
 extern avl_node_t *avl_search(const avl_tree_t *, const void *item);
 
+#ifndef AVL_NO_COMPAT
+#ifdef __GNUC__
+#define AVL_DEPRECATED __attribute__((deprecated))
+#else
+#define AVL_DEPRECATED
+#endif
+
+/* Searches for a node with the key closest (or equal) to the given item.
+ * If avlnode is not NULL, *avlnode will be set to the node found or NULL
+ * if the tree is empty. Return values:
+ *   -1  if the returned node is smaller
+ *    0  if the returned node is equal or if the tree is empty
+ *    1  if the returned node is greater
+ * O(lg n) */
+extern int avl_search_closest_FIXME(const avl_tree_t *, const void *, avl_node_t **)
+	AVL_DEPRECATED;
+
+/* Insert a node in an empty tree. If avlnode is NULL, the tree will be
+ * cleared and ready for re-use.
+ * If the tree is not empty, the old nodes are left dangling.
+ * O(1) */
+extern avl_node_t *avl_insert_top_FIXME(avl_tree_t *, avl_node_t *avlnode)
+	AVL_DEPRECATED;
+#endif
+
 #ifdef AVL_COUNT
 /* Returns the number of nodes in the tree.
  * O(1) */

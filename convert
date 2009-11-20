@@ -23,15 +23,15 @@ my %trans = (
 	avl_insert_after => "avl_insert_after",
 	avl_insert => "avl_item_insert",
 	avl_insert_before => "avl_insert_before",
-	avl_insert_node => "avl_insert_node",
-	avl_insert_top => "avl_insert_somewhere",
+	avl_insert_node => "avl_insert",
+	avl_insert_top => "avl_insert_top_FIXME",
 	avl_search => "avl_search",
-	avl_search_closest => "avl_search_rightish",
+	avl_search_closest => "avl_search_closest_FIXME",
 	avl_unlink_node => "avl_unlink",
 );
 
 my $re = join('|', map { qr/\Q$_\E/ } keys %trans);
-$re = qr/\b$re\b/;
+$re = qr/\b($re)\b/;
 
 foreach my $file (@ARGV) {
 	unlink("$file,new") or $!{ENOENT}

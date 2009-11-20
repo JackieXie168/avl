@@ -310,6 +310,16 @@ avl_node_t *avl_search_right(const avl_tree_t *tree, const void *item, int *exac
 	return avl_const_node(node);
 }
 
+/* Searches for a node with the key closest (or equal) to the given item.
+ * If avlnode is not NULL, *avlnode will be set to the node found or NULL
+ * if the tree is empty. Return values:
+ *   -1  if the returned node is smaller
+ *    0  if the returned node is equal or if the tree is empty
+ *    1  if the returned node is greater
+ * O(lg n) */
+extern int avl_search_closest(const avl_tree_t *, const void *item, avl_node_t **avlnode);
+
+
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	int c;
 	avl_node_t *n;
@@ -392,7 +402,7 @@ avl_node_t *avl_node_alloc(const void *item) {
  * cleared and ready for re-use.
  * If the tree is not empty, the old nodes are left dangling.
  * O(1) */
-static avl_node_t *avl_insert_top(avl_tree_t *avltree, avl_node_t *newnode) {
+avl_node_t *avl_insert_top(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_clear(newnode);
 	newnode->prev = newnode->next = newnode->parent = NULL;
 	avltree->head = avltree->tail = avltree->top = newnode;
