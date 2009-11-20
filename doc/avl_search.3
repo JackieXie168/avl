@@ -30,6 +30,8 @@ searches for the item in the tree and returns a matching node if found.
 searches for an item, returning either the first (leftmost) exact
 match, or (if no exact match could be found) the first (leftmost)
 of the nodes that have an item greater than the search item.
+In other words, this function searches for a node greater-or-equal
+to the search item.
 If
 .Fa exact
 is not
@@ -47,40 +49,8 @@ if the returned node is equal
 Searches for an item, returning either the last (rightmost) exact
 match, or (if no exact match could be found) the last (rightmost)
 of the nodes that have an item smaller than the search item.
-If
-.Fa exact
-is not
-.Dv NULL ,
-.Fa *exact
-will be set to:
-.Bl -tag
-.It 0
-if the returned node is not equal
-.It 1
-if the returned node is equal
-.El
-.Pp
-.Fn avl_search_leftish
-Searches for an item, returning either some exact
-match, or (if no exact match could be found) the first (leftmost)
-of the nodes that have an item larger than the search item.
-If
-.Fa exact
-is not
-.Dv NULL ,
-.Fa *exact
-will be set to:
-.Bl -tag
-.It 0
-if the returned node is not equal
-.It 1
-if the returned node is equal
-.El
-.Pp
-.Fn avl_search_rightish
-Searches for an item, returning either some exact
-match, or (if no exact match could be found) the last (rightmost)
-of the nodes that have an item smaller than the search item.
+In other words, this function searches for a node less-or-equal
+to the search item.
 If
 .Fa exact
 is not

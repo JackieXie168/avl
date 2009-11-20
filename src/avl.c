@@ -205,7 +205,7 @@ static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, cons
 	}
 }
 
-avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, int *exact) {
+static avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, int *exact) {
 	avl_node_t *node;
 	avl_compare_t cmp;
 	int c;
@@ -217,7 +217,6 @@ avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, int *ex
 		return *exact = 0, (avl_node_t *)NULL;
 
 	node = tree->top;
-
 	if(!node)
 		return *exact = 0, (avl_node_t *)NULL;
 
@@ -242,7 +241,7 @@ avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, int *ex
 	}
 }
 
-avl_node_t *avl_search_rightish(const avl_tree_t *tree, const void *item, int *exact) {
+static avl_node_t *avl_search_rightish(const avl_tree_t *tree, const void *item, int *exact) {
 	avl_node_t *node;
 	avl_compare_t cmp;
 	int c;
@@ -254,7 +253,6 @@ avl_node_t *avl_search_rightish(const avl_tree_t *tree, const void *item, int *e
 		return *exact = 0, (avl_node_t *)NULL;
 
 	node = tree->top;
-
 	if(!node)
 		return *exact = 0, (avl_node_t *)NULL;
 
@@ -325,10 +323,17 @@ int avl_search_closest_FIXME(const avl_tree_t *tree, const void *item, avl_node_
 			*avlnode = NULL;
 		return 0;
 	}
-	node = avl_search_rightish(tree, item, &e);
+	node = avl_search_leftish(tree, item, &e);
+	if(node) {
+		e = !e;
+	} else {
+		node = tree->tail;
+		if(node)
+			e = -1;
+	}
 	if(avlnode)
 		*avlnode = node;
-	return !e;
+	return e;
 }
 
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
