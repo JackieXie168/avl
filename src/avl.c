@@ -291,7 +291,7 @@ avl_node_t *avl_search_left(const avl_tree_t *tree, const void *item, int *exact
 
 	node = avl_search_leftish(tree, item, exact);
 	if(*exact)
-		node = avl_search_leftmost_equal(tree, node, item);
+		return avl_const_node(avl_search_leftmost_equal(tree, node, item));
 
 	return avl_const_node(node);
 }
@@ -305,7 +305,7 @@ avl_node_t *avl_search_right(const avl_tree_t *tree, const void *item, int *exac
 
 	node = avl_search_rightish(tree, item, exact);
 	if(*exact)
-		node = avl_search_rightmost_equal(tree, node, item);
+		return avl_const_node(avl_search_rightmost_equal(tree, node, item));
 
 	return avl_const_node(node);
 }
@@ -317,7 +317,7 @@ avl_node_t *avl_search_right(const avl_tree_t *tree, const void *item, int *exac
  *    0  if the returned node is equal or if the tree is empty
  *    1  if the returned node is greater
  * O(lg n) */
-extern int avl_search_closest(const avl_tree_t *, const void *item, avl_node_t **avlnode);
+extern int avl_search_closest_FIXME(const avl_tree_t *, const void *item, avl_node_t **avlnode);
 
 
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
@@ -402,11 +402,15 @@ avl_node_t *avl_node_alloc(const void *item) {
  * cleared and ready for re-use.
  * If the tree is not empty, the old nodes are left dangling.
  * O(1) */
-avl_node_t *avl_insert_top(avl_tree_t *avltree, avl_node_t *newnode) {
+static avl_node_t *avl_insert_top(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_clear(newnode);
 	newnode->prev = newnode->next = newnode->parent = NULL;
 	avltree->head = avltree->tail = avltree->top = newnode;
 	return newnode;
+}
+
+avl_node_t *avl_insert_top_FIXME(avl_tree_t *avltree, avl_node_t *newnode) {
+	return avl_insert_top(avltree, newnode);
 }
 
 avl_node_t *avl_insert_before(avl_tree_t *avltree, avl_node_t *node, avl_node_t *newnode) {
