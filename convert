@@ -3,6 +3,11 @@
 # $Id$
 # $URL$
 
+# This migration script converts source files to use the new
+# function name conventions of libavl.
+
+# Usage: convert *.c
+
 use strict;
 use warnings FATAL => 'all';
 use IO::File;

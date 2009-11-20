@@ -19,8 +19,8 @@ lib_LTLIBRARIES = libavl.la
 libavl_la_SOURCES = $(echo src/*)
 libavl_la_LDFLAGS = -version-info 2:0:0
 include_HEADERS = src/avl.h
-dist_man_MANS = $(echo doc/*)
-nobase_dist_doc_DATA = $(echo example/*)
+dist_man_MANS = $(echo doc/*.[0-9])
+nobase_dist_doc_DATA = $(echo example/*) convert
 EXTRA_DIST = makedist
 EOF
 
