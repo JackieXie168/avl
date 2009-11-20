@@ -1,0 +1,61 @@
+#! /usr/bin/perl
+
+# $Id$
+# $URL$
+
+use strict;
+use warnings FATAL => 'all';
+use IO::File;
+
+my %trans = (
+	avl_alloc_tree => "avl_tree_alloc",
+	avl_at => "avl_at",
+	avl_clear_tree => "avl_tree_clear",
+	avl_count => "avl_count",
+	avl_delete => "avl_item_delete",
+	avl_delete_node => "avl_delete",
+	avl_fixup_node => "avl_fixup",
+	avl_free_nodes => "avl_tree_purge",
+	avl_free_tree => "avl_free_tree",
+	avl_index => "avl_index",
+	avl_init_node => "avl_node_init",
+	avl_init_tree => "avl_tree_init",
+	avl_insert_after => "avl_insert_after",
+	avl_insert => "avl_item_insert",
+	avl_insert_before => "avl_insert_before",
+	avl_insert_node => "avl_insert_node",
+	avl_insert_top => "avl_insert_somewhere",
+	avl_search => "avl_search",
+	avl_search_closest => "avl_search_rightish",
+	avl_unlink_node => "avl_unlink",
+);
+
+my $re = join('|', map { qr/\Q$_\E/ } keys %trans);
+$re = qr/\b$re\b/;
+
+foreach my $file (@ARGV) {
+	unlink("$file,new") or $!{ENOENT}
+		or die "unlink($file,new): $!\n";
+
+	my $in = new IO::File($file, '<')
+		or die "$file: $!\n";
+	my $out = new IO::File("$file,new", '>')
+		or die "$file,new: $!\n";
+
+	while(my $line = $in->getline) {
+		$line =~ s/$re/$trans{$&}/ge;
+		$out->write($line)
+			or die "$file,new: $!\n";
+	}
+
+	$in->eof
+		or die "$file: $!\n";
+	$in->close
+		or die "$file: $!\n";
+
+	$out>close
+		or die "$file,new: $!\n";
+
+	rename("$file,new", $file)
+		or die "rename($file,new -> $file): $!\n";
+}
