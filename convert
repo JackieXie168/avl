@@ -24,6 +24,7 @@ my %trans = (
 	avl_insert => "avl_item_insert",
 	avl_insert_before => "avl_insert_before",
 	avl_insert_node => "avl_insert",
+	avl_insert_somewhere => "avl_insert_somewhere_FIXME",
 	avl_insert_top => "avl_insert_top_FIXME",
 	avl_search => "avl_search",
 	avl_search_closest => "avl_search_closest_FIXME",
