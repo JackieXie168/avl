@@ -317,8 +317,19 @@ avl_node_t *avl_search_right(const avl_tree_t *tree, const void *item, int *exac
  *    0  if the returned node is equal or if the tree is empty
  *    1  if the returned node is greater
  * O(lg n) */
-extern int avl_search_closest_FIXME(const avl_tree_t *, const void *item, avl_node_t **avlnode);
-
+int avl_search_closest_FIXME(const avl_tree_t *tree, const void *item, avl_node_t **avlnode) {
+	avl_node_t node;
+	int e;
+	if(!tree || !tree->top) {
+		if(avlnode)
+			*avlnode = NULL;
+		return 0;
+	}
+	node = avl_search_rightish(tree, item, &e);
+	if(avlnode)
+		*avlnode = node;
+	return !e;
+}
 
 avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	int c;
