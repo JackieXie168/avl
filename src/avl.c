@@ -318,7 +318,7 @@ avl_node_t *avl_search_right(const avl_tree_t *tree, const void *item, int *exac
  *    1  if the returned node is greater
  * O(lg n) */
 int avl_search_closest_FIXME(const avl_tree_t *tree, const void *item, avl_node_t **avlnode) {
-	avl_node_t node;
+	avl_node_t *node;
 	int e;
 	if(!tree || !tree->top) {
 		if(avlnode)
