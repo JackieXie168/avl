@@ -63,7 +63,7 @@ allocating and freeing trees
 avl_tree_t *tree;
 avl_node_t *node;
 
-tree = avl_tree_alloc(strcmp, NULL);
+tree = avl_tree_malloc(strcmp, NULL);
 avl_item_insert(tree, "foo");
 avl_item_delete(tree, "foo");
 

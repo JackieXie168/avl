@@ -43,7 +43,7 @@ functions and structures are available. As a small example:
 		avl_tree_t *tree;
 		avl_node_t *node;
 
-		tree = avl_tree_alloc((avl_cmp_t)strcmp, (avl_free_t)free);
+		tree = avl_tree_malloc((avl_cmp_t)strcmp, (avl_free_t)free);
 
 		while(fgets(buf, BUFSIZE, stdin))
 			avl_item_insert(tree, strdup(buf));
@@ -54,7 +54,7 @@ functions and structures are available. As a small example:
 		avl_tree_free(tree);
 	}
 
-A real implementation would check the return values of avl_tree_alloc,
+A real implementation would check the return values of avl_tree_malloc,
 avl_insert and strdup, of course.
 
 ========================================================================

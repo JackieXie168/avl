@@ -3,7 +3,7 @@
 .Os libavl
 .Sh NAME
 .Nm avl_node_init ,
-.Nm avl_node_alloc
+.Nm avl_node_malloc
 .Nd functions to allocate and initialize an augmented AVL node
 .Sh LIBRARY
 .Lb libavl
@@ -12,7 +12,7 @@
 .Ft avl_node_t *
 .Fn avl_node_init "avl_node_t *node" "void *item"
 .Ft avl_node_t *
-.Fn avl_node_alloc "void *item"
+.Fn avl_node_malloc "void *item"
 .Fn AVL_NODE_INITIALIZER "void *item"
 .Ft const avl_node
 .Dv avl_node_0 ;
@@ -26,7 +26,7 @@ The item in this node will set using the supplied
 argument (which may be
 .Dv NULL ) .
 .Pp
-.Fn avl_node_alloc
+.Fn avl_node_malloc
 allocates an avl_node_t using
 .Fn malloc
 and initializes it using
@@ -57,7 +57,7 @@ Returns the value of
 .Dv NULL ) .
 .Sh ERRORS
 The
-.Fn avl_node_alloc
+.Fn avl_node_malloc
 function can fail if and only if
 .Fn malloc
 fails.

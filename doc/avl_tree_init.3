@@ -3,7 +3,7 @@
 .Os libavl
 .Sh NAME
 .Nm avl_tree_init ,
-.Nm avl_tree_alloc ,
+.Nm avl_tree_malloc ,
 .Nm avl_tree_clear ,
 .Nm avl_tree_free ,
 .Nm avl_tree_purge
@@ -15,7 +15,7 @@
 .Ft avl_tree_t *
 .Fn avl_tree_init "avl_tree_t *tree" "avl_cmp_t cmp" "avl_free_t freeitem"
 .Ft avl_tree_t *
-.Fn avl_tree_alloc "avl_cmp_t cmp" "avl_free_t free"
+.Fn avl_tree_malloc "avl_cmp_t cmp" "avl_free_t free"
 .Ft avl_tree_t *
 .Fn avl_tree_clear "avl_tree_t *tree"
 .Ft void
@@ -44,7 +44,7 @@ is not
 then the delete functions in the avl library will use this to free any memory
 associated with the stored item.
 .Pp
-.Fn avl_tree_alloc
+.Fn avl_tree_malloc
 allocates an avl_tree_t and initializes it using
 .Fn avl_tree_init .
 .Pp
@@ -87,7 +87,7 @@ Those functions that return anything return the value of
 .Dv NULL ) .
 .Sh ERRORS
 The
-.Fn avl_tree_alloc
+.Fn avl_tree_malloc
 function can fail if and only if
 .Fn malloc
 fails.

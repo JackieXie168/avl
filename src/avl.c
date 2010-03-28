@@ -354,7 +354,7 @@ avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_cmp_t cmp, avl_free_t freeite
 	return avltree;
 }
 
-avl_tree_t *avl_tree_alloc(avl_cmp_t cmp, avl_free_t freeitem) {
+avl_tree_t *avl_tree_malloc(avl_cmp_t cmp, avl_free_t freeitem) {
 	return avl_tree_init(malloc(sizeof(avl_tree_t)), cmp, freeitem);
 }
 
@@ -406,7 +406,7 @@ avl_node_t *avl_node_init(avl_node_t *newnode, const void *item) {
 	return newnode;
 }
 
-avl_node_t *avl_node_alloc(const void *item) {
+avl_node_t *avl_node_malloc(const void *item) {
 	avl_node_t *newnode;
 	newnode = malloc(sizeof *newnode);
 	if(newnode)
@@ -513,7 +513,7 @@ avl_node_t *avl_item_insert(avl_tree_t *avltree, const void *item) {
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_init(malloc(sizeof *newnode), item);
+	newnode = avl_node_malloc(item);
 	if(newnode) {
 		if(avl_insert(avltree, newnode))
 			return newnode;
@@ -529,7 +529,7 @@ avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, const void *item) {
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_init(malloc(sizeof *newnode), item);
+	newnode = avl_node_malloc(item);
 	if(newnode)
 		return avl_insert_somewhere(avltree, newnode);
 	return NULL;
@@ -541,7 +541,7 @@ avl_node_t *avl_item_insert_before(avl_tree_t *avltree, avl_node_t *node, const 
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_init(malloc(sizeof *newnode), item);
+	newnode = avl_node_malloc(item);
 	if(newnode)
 		return avl_insert_before(avltree, node, newnode);
 	return NULL;
@@ -553,7 +553,7 @@ avl_node_t *avl_item_insert_after(avl_tree_t *avltree, avl_node_t *node, const v
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_init(malloc(sizeof *newnode), item);
+	newnode = avl_node_malloc(item);
 	if(newnode)
 		return avl_insert_after(avltree, node, newnode);
 	return NULL;
@@ -565,7 +565,7 @@ avl_node_t *avl_item_insert_left(avl_tree_t *avltree, const void *item) {
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_init(malloc(sizeof *newnode), item);
+	newnode = avl_node_malloc(item);
 	if(newnode)
 		return avl_insert_left(avltree, newnode);
 	return NULL;
@@ -577,7 +577,7 @@ avl_node_t *avl_item_insert_right(avl_tree_t *avltree, const void *item) {
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_init(malloc(sizeof *newnode), item);
+	newnode = avl_node_malloc(item);
 	if(newnode)
 		return avl_insert_right(avltree, newnode);
 	return NULL;
