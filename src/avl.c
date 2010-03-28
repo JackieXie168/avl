@@ -158,7 +158,7 @@ unsigned long avl_index(const avl_node_t *avlnode) {
 #endif
 
 static const avl_node_t *avl_search_leftmost_equal(const avl_tree_t *tree, const avl_node_t *node, const void *item) {
-	avl_compare_t cmp = tree->cmp;
+	avl_cmp_t cmp = tree->cmp;
 	const avl_node_t *r = node;
 
 	for(;;) {
@@ -182,7 +182,7 @@ static const avl_node_t *avl_search_leftmost_equal(const avl_tree_t *tree, const
 }
 
 static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, const avl_node_t *node, const void *item) {
-	avl_compare_t cmp = tree->cmp;
+	avl_cmp_t cmp = tree->cmp;
 	const avl_node_t *r = node;
 
 	for(;;) {
@@ -207,7 +207,7 @@ static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, cons
 
 static avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, int *exact) {
 	avl_node_t *node;
-	avl_compare_t cmp;
+	avl_cmp_t cmp;
 	int c;
 
 	if(!exact)
@@ -243,7 +243,7 @@ static avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, 
 
 static avl_node_t *avl_search_rightish(const avl_tree_t *tree, const void *item, int *exact) {
 	avl_node_t *node;
-	avl_compare_t cmp;
+	avl_cmp_t cmp;
 	int c;
 
 	if(!exact)
@@ -343,7 +343,7 @@ avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	return c ? n : NULL;
 }
 
-avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_compare_t cmp, avl_freeitem_t freeitem) {
+avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_cmp_t cmp, avl_free_t freeitem) {
 	if(avltree) {
 		avltree->head = NULL;
 		avltree->tail = NULL;
@@ -354,7 +354,7 @@ avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_compare_t cmp, avl_freeitem_t
 	return avltree;
 }
 
-avl_tree_t *avl_tree_alloc(avl_compare_t cmp, avl_freeitem_t freeitem) {
+avl_tree_t *avl_tree_alloc(avl_cmp_t cmp, avl_free_t freeitem) {
 	return avl_tree_init(malloc(sizeof(avl_tree_t)), cmp, freeitem);
 }
 
@@ -366,7 +366,7 @@ avl_tree_t *avl_tree_clear(avl_tree_t *avltree) {
 
 avl_tree_t *avl_tree_purge(avl_tree_t *avltree) {
 	avl_node_t *node, *next;
-	avl_freeitem_t freeitem;
+	avl_free_t freeitem;
 
 	if(!avltree)
 		return NULL;

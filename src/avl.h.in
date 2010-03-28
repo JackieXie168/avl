@@ -62,12 +62,12 @@
  *    0  if a = b
  *    1  if a > b
  */
-typedef int (*avl_compare_t)(const void *, const void *);
+typedef int (*avl_cmp_t)(const void *, const void *);
 
 /* User supplied function to delete an item when a node is free()d.
  * If NULL, the item is not free()d.
  */
-typedef void (*avl_freeitem_t)(void *);
+typedef void (*avl_free_t)(void *);
 
 #define AVL_CMP(a,b) ((a) < (b) ? -1 : (a) > (b) ? 1 : 0)
 
@@ -100,8 +100,8 @@ typedef struct avl_tree_t {
 	avl_node_t *head;
 	avl_node_t *tail;
 	avl_node_t *top;
-	avl_compare_t cmp;
-	avl_freeitem_t freeitem;
+	avl_cmp_t cmp;
+	avl_free_t freeitem;
 } avl_tree_t;
 
 extern const avl_tree_t avl_tree_0;
@@ -110,13 +110,13 @@ extern const avl_tree_t avl_tree_0;
  * the supplied strcmp()-like function.
  * Returns the value of avltree (even if it's NULL).
  * O(1) */
-extern avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_compare_t, avl_freeitem_t);
+extern avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_cmp_t, avl_free_t);
 
 /* Allocates and initializes a new tree for elements that will be
  * ordered using the supplied strcmp()-like function.
  * Returns NULL if memory could not be allocated.
  * O(1) */
-extern avl_tree_t *avl_tree_alloc(avl_compare_t, avl_freeitem_t);
+extern avl_tree_t *avl_tree_alloc(avl_cmp_t, avl_free_t);
 
 /* Frees the entire tree efficiently. Nodes will be free()d.
  * If the tree's freeitem is not NULL it will be invoked on every item.

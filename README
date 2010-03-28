@@ -43,7 +43,7 @@ functions and structures are available. As a small example:
 		avl_tree_t *tree;
 		avl_node_t *node;
 
-		tree = avl_tree_alloc((avl_compare_t)strcmp, (avl_freeitem_t)free);
+		tree = avl_tree_alloc((avl_cmp_t)strcmp, (avl_free_t)free);
 
 		while(fgets(buf, BUFSIZE, stdin))
 			avl_item_insert(tree, strdup(buf));

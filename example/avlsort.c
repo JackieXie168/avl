@@ -44,8 +44,8 @@ int main(int argc, char **argv) {
 	struct stat st;
 	int mmapped = 0;
 
-	t = avl_tree_alloc((avl_compare_t)strcmp, NULL);
-/*	t = avl_tree_alloc((avl_compare_t)avl_pointer_cmp, NULL); */
+	t = avl_tree_alloc((avl_cmp_t)strcmp, NULL);
+/*	t = avl_tree_alloc((avl_cmp_t)avl_pointer_cmp, NULL); */
 
 	u = 0;
 	if(!fstat(STDIN_FILENO, &st) && S_ISREG(st.st_mode)) {
