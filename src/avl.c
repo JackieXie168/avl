@@ -27,9 +27,6 @@
 	to the sourcecode, change the interface and replace a few bugs.
 	Mail him if you find any new bugs.
 
-	$Id$
-	$URL$
-
 *****************************************************************************/
 
 #include <stdio.h>

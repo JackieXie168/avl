@@ -58,6 +58,3 @@ A real implementation would check the return values of avl_tree_malloc,
 avl_insert and strdup, of course.
 
 ========================================================================
-
-$Id$
-$URL$

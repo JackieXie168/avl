@@ -1,8 +1,5 @@
 #! /bin/posh
 
-# $Id$
-# $URL$
-
 set -ex
 
 fgrep -q 435aaec721a95878c2bd5b73e403a97f9005f61f makedist
