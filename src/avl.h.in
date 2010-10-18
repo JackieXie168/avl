@@ -293,15 +293,15 @@ extern avl_node_t *avl_search(const avl_tree_t *, const void *item);
  *    0  if the returned node is equal or if the tree is empty
  *    1  if the returned node is greater
  * O(lg n) */
-extern int avl_search_closest_FIXME(const avl_tree_t *, const void *, avl_node_t **)
-	AVL_DEPRECATED;
+AVL_DEPRECATED
+extern int avl_search_closest_FIXME(const avl_tree_t *, const void *, avl_node_t **);
 
 /* Insert a node in an empty tree. If avlnode is NULL, the tree will be
  * cleared and ready for re-use.
  * If the tree is not empty, the old nodes are left dangling.
  * O(1) */
-extern avl_node_t *avl_insert_top_FIXME(avl_tree_t *, avl_node_t *avlnode)
-	AVL_DEPRECATED;
+AVL_DEPRECATED
+extern avl_node_t *avl_insert_top_FIXME(avl_tree_t *, avl_node_t *avlnode);
 #endif
 
 #ifdef AVL_COUNT
@@ -321,7 +321,13 @@ extern unsigned long avl_index(const avl_node_t *);
 
 #endif
 
-#define AVL_CMP_DECLARE_NAMED(n,t) extern int avl_##n##_cmp(const t, const t);
+#define AVL_CMP_DECLARE_NAMED(n,t) \
+	__extension__ \
+	__attribute__((const)) \
+	extern int avl_##n##_cmp(const t, const t); \
+	__extension__ \
+	__attribute__((pure)) \
+	extern int avl_##n##_ptr_cmp(const t *, const t *);
 #define AVL_CMP_DECLARE_T(t) AVL_CMP_DECLARE_NAMED(t, t##_t)
 #define AVL_CMP_DECLARE(t) AVL_CMP_DECLARE_NAMED(t, t)
 
@@ -337,13 +343,11 @@ AVL_CMP_DECLARE_NAMED(unsigned_int, unsigned int)
 AVL_CMP_DECLARE_NAMED(unsigned_long, unsigned long)
 AVL_CMP_DECLARE_NAMED(pointer, void *)
 #define avl_ptr_cmp avl_pointer_cmp
+#define avl_ptrptr_cmp avl_pointerptr_cmp
 
 #ifdef __GNUC__
-__extension__
 AVL_CMP_DECLARE_NAMED(long_long, long long)
-__extension__
 AVL_CMP_DECLARE_NAMED(unsigned_long_long, unsigned long long)
-__extension__
 AVL_CMP_DECLARE_NAMED(long_double, long double)
 #endif
 
@@ -380,5 +384,6 @@ AVL_CMP_DECLARE_T(size)
 AVL_CMP_DECLARE_T(ssize)
 AVL_CMP_DECLARE_T(socklen)
 
+__attribute__((pure))
 extern int avl_timeval_cmp(const struct timeval *, const struct timeval *);
 #endif

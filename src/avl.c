@@ -836,7 +836,13 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 	}
 }
 
-#define AVL_CMP_DEFINE_NAMED(n,t) int avl_##n##_cmp(const t a, const t b) { return AVL_CMP(a,b); }
+#define AVL_CMP_DEFINE_NAMED(n,t) \
+	__extension__ \
+	__attribute__((const)) \
+	int avl_##n##_cmp(const t a, const t b) { return AVL_CMP(a, b); } \
+	__extension__ \
+	__attribute__((pure)) \
+	int avl_##n##_ptr_cmp(const t *a, const t *b) { return AVL_CMP(*a, *b); }
 #define AVL_CMP_DEFINE_T(t) AVL_CMP_DEFINE_NAMED(t, t##_t)
 #define AVL_CMP_DEFINE(t) AVL_CMP_DEFINE_NAMED(t, t)
 
@@ -856,11 +862,8 @@ AVL_CMP_DEFINE_NAMED(unsigned_long, unsigned long)
 AVL_CMP_DEFINE_NAMED(pointer, void *)
 
 #ifdef __GNUC__
-__extension__
 AVL_CMP_DEFINE_NAMED(long_long, long long)
-__extension__
 AVL_CMP_DEFINE_NAMED(unsigned_long_long, unsigned long long)
-__extension__
 AVL_CMP_DEFINE_NAMED(long_double, long double)
 #endif
 
@@ -899,6 +902,7 @@ AVL_CMP_DEFINE_T(size)
 AVL_CMP_DEFINE_T(ssize)
 AVL_CMP_DEFINE_T(socklen)
 
+__attribute__((pure))
 int avl_timeval_cmp(const struct timeval *a, const struct timeval *b) {
 	int r;
 	r = AVL_CMP(a->tv_sec, b->tv_sec);
