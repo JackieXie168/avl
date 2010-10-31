@@ -340,19 +340,19 @@ avl_node_t *avl_search(const avl_tree_t *avltree, const void *item) {
 	return c ? n : NULL;
 }
 
-avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_cmp_t cmp, avl_free_t freeitem) {
+avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_cmp_t cmp, avl_free_t free) {
 	if(avltree) {
 		avltree->head = NULL;
 		avltree->tail = NULL;
 		avltree->top = NULL;
 		avltree->cmp = cmp;
-		avltree->freeitem = freeitem;
+		avltree->free = free;
 	}
 	return avltree;
 }
 
-avl_tree_t *avl_tree_malloc(avl_cmp_t cmp, avl_free_t freeitem) {
-	return avl_tree_init(malloc(sizeof(avl_tree_t)), cmp, freeitem);
+avl_tree_t *avl_tree_malloc(avl_cmp_t cmp, avl_free_t free) {
+	return avl_tree_init(malloc(sizeof(avl_tree_t)), cmp, free);
 }
 
 avl_tree_t *avl_tree_clear(avl_tree_t *avltree) {
@@ -363,17 +363,17 @@ avl_tree_t *avl_tree_clear(avl_tree_t *avltree) {
 
 avl_tree_t *avl_tree_purge(avl_tree_t *avltree) {
 	avl_node_t *node, *next;
-	avl_free_t freeitem;
+	avl_free_t func;
 
 	if(!avltree)
 		return NULL;
 
-	freeitem = avltree->freeitem;
+	func = avltree->free;
 
 	for(node = avltree->head; node; node = next) {
 		next = node->next;
-		if(freeitem)
-			freeitem(node->item);
+		if(func)
+			func(node->item);
 		free(node);
 	}
 
@@ -644,8 +644,8 @@ void *avl_delete(avl_tree_t *avltree, avl_node_t *avlnode) {
 	if(avlnode) {
 		item = avlnode->item;
 		(void)avl_unlink(avltree, avlnode);
-		if(avltree->freeitem)
-			avltree->freeitem(item);
+		if(avltree->free)
+			avltree->free(item);
 		free(avlnode);
 	}
 	return item;

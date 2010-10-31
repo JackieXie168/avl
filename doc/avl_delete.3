@@ -22,7 +22,7 @@ deletes a node from the tree and frees it using
 .Fn free .
 Returns immediately if the node is
 .Dv NULL .
-If the tree's freeitem is not
+If the tree's free is not
 .Dv NULL ,
 it is invoked on the item.
 .Pp
@@ -31,13 +31,13 @@ searches for a node in the tree using the given
 .Fa item
 as the key and, if found, deletes the node and frees it using
 .Fn free .
-If the tree's freeitem is not
+If the tree's free is not
 .Dv NULL ,
 it is invoked on the item.
 .Pp
 .Fn avl_unlink
 removes a node from the tree.
-The freeitem handler of the tree (if any) will not be invoked on the item.
+The free handler of the tree (if any) will not be invoked on the item.
 This function is useful if you need to update the search key or if you're
 doing your own memory management for nodes.
 .Sh RETURN VALUES
@@ -45,7 +45,7 @@ doing your own memory management for nodes.
 and
 .Fn avl_item_delete
 return the item that was stored inside the deleted node, unless it
-was freed using the freeitem of the tree.
+was freed using the free of the tree.
 In the case of
 .Fn avl_item_delete ,
 if the item was not found,

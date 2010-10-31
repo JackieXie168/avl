@@ -98,7 +98,7 @@ typedef struct avl_tree_t {
 	avl_node_t *tail;
 	avl_node_t *top;
 	avl_cmp_t cmp;
-	avl_free_t freeitem;
+	avl_free_t free;
 	void *allocator;
 	void *(*allocate)(void *allocator, size_t);
 	void *(*deallocate)(void *allocator, void *, size_t);
@@ -119,18 +119,18 @@ extern avl_tree_t *avl_tree_init(avl_tree_t *avltree, avl_cmp_t, avl_free_t);
 extern avl_tree_t *avl_tree_malloc(avl_cmp_t, avl_free_t);
 
 /* Frees the entire tree efficiently. Nodes will be free()d.
- * If the tree's freeitem is not NULL it will be invoked on every item.
+ * If the tree's free is not NULL it will be invoked on every item.
  * O(n) */
 extern void avl_tree_free(avl_tree_t *);
 
 /* Reinitializes the tree structure for reuse. Nothing is free()d.
- * Compare and freeitem functions are left alone.
+ * Compare and free functions are left alone.
  * Returns the value of avltree (even if it's NULL).
  * O(1) */
 extern avl_tree_t *avl_tree_clear(avl_tree_t *);
 
 /* Free()s all nodes in the tree but leaves the tree itself.
- * If the tree's freeitem is not NULL it will be invoked on every item.
+ * If the tree's free is not NULL it will be invoked on every item.
  * Returns the value of avltree (even if it's NULL).
  * O(n) */
 extern avl_tree_t *avl_tree_purge(avl_tree_t *);
@@ -221,19 +221,19 @@ extern avl_node_t *avl_insert_after(avl_tree_t *, avl_node_t *old, avl_node_t *n
 
 /* Deletes a node from the tree.
  * Returns the value of the node (even if it's NULL).
- * The item will not be free()d regardless of the tree's freeitem handler.
+ * The item will not be free()d regardless of the tree's free handler.
  * This function comes in handy if you need to update the search key.
  * O(lg n) */
 extern avl_node_t *avl_unlink(avl_tree_t *, avl_node_t *);
 
 /* Deletes a node from the tree. Returns immediately if the node is NULL.
- * If the tree's freeitem is not NULL, it is invoked on the item.
+ * If the tree's free is not NULL, it is invoked on the item.
  * If it is, returns the item. In all other cases returns NULL.
  * O(lg n) */
 extern void *avl_delete(avl_tree_t *, avl_node_t *);
 
 /* Searches for an item in the tree and deletes it if found.
- * If the tree's freeitem is not NULL, it is invoked on the item.
+ * If the tree's free is not NULL, it is invoked on the item.
  * If it is, returns the item. In all other cases returns NULL.
  * O(lg n) */
 extern void *avl_item_delete(avl_tree_t *, const void *item);
