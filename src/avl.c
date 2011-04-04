@@ -202,6 +202,14 @@ static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, cons
 	}
 }
 
+/* Searches for an item, returning either some exact
+ * match, or (if no exact match could be found) the first (leftmost)
+ * of the nodes that have an item larger than the search item.
+ * If exact is not NULL, *exact will be set to:
+ *    0  if the returned node is inequal or NULL
+ *    1  if the returned node is equal
+ * Returns NULL if no equal or larger element could be found.
+ * O(lg n) */
 static avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, int *exact) {
 	avl_node_t *node;
 	avl_cmp_t cmp;
@@ -238,6 +246,14 @@ static avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, 
 	}
 }
 
+/* Searches for an item, returning either some exact
+ * match, or (if no exact match could be found) the last (rightmost)
+ * of the nodes that have an item smaller than the search item.
+ * If exact is not NULL, *exact will be set to:
+ *    0  if the returned node is inequal or NULL
+ *    1  if the returned node is equal
+ * Returns NULL if no equal or smaller element could be found.
+ * O(lg n) */
 static avl_node_t *avl_search_rightish(const avl_tree_t *tree, const void *item, int *exact) {
 	avl_node_t *node;
 	avl_cmp_t cmp;

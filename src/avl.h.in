@@ -264,16 +264,6 @@ extern avl_node_t *avl_search_left(const avl_tree_t *, const void *item, int *ex
  * O(lg n) */
 extern avl_node_t *avl_search_right(const avl_tree_t *, const void *item, int *exact);
 
-/* Searches for an item, returning either some exact
- * match, or (if no exact match could be found) the last (rightmost)
- * of the nodes that have an item smaller than the search item.
- * If exact is not NULL, *exact will be set to:
- *    0  if the returned node is inequal or NULL
- *    1  if the returned node is equal
- * Returns NULL if no equal or smaller element could be found.
- * O(lg n) */
-extern avl_node_t *avl_search_rightish(const avl_tree_t *, const void *item, int *exact);
-
 /* Searches for the item in the tree and returns a matching node if found
  * or NULL if not.
  * O(lg n) */
