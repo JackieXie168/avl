@@ -99,9 +99,9 @@ typedef struct avl_tree_t {
 	avl_node_t *top;
 	avl_cmp_t cmp;
 	avl_free_t free;
-	void *allocator;
-	void *(*allocate)(void *allocator, size_t);
-	void *(*deallocate)(void *allocator, void *, size_t);
+	void *reserved1;
+	void *reserved2;
+	void *reserved3;
 } avl_tree_t;
 
 extern const avl_tree_t avl_tree_0;
