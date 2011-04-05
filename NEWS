@@ -1,6 +1,6 @@
-Version 2.0.0 2009-09-29 Wessel Dankers <wsl@fruit.je>
-	API change: names are now object-verb.
-	Change build system to auto-fu+libtool
+Version 2.0.0 2011-04-05 Wessel Dankers <wsl@fruit.je>
+	API change: names are now object-verb (conversion script included)
+	Change build system to autofrob+libtool
 	Add manpages
 
 Version 0.3.5 2002-11-15 Wessel Dankers <wsl@fruit.eu.org>
