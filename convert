@@ -14,11 +14,12 @@ my %trans = (
 	avl_alloc_node => 'avl_node_malloc',
 	avl_at => 'avl_at',
 	avl_clear_tree => 'avl_tree_clear',
+	avl_compare_t => 'avl_cmp_t',
 	avl_count => 'avl_count',
 	avl_delete => 'avl_item_delete',
 	avl_delete_node => 'avl_delete',
 	avl_fixup_node => 'avl_fixup',
-	avl_free_t => 'avl_free_t',
+	avl_freeitem_t => 'avl_free_t',
 	avl_free_nodes => 'avl_tree_purge',
 	avl_free_tree => 'avl_free_tree',
 	avl_index => 'avl_index',
@@ -47,8 +48,8 @@ foreach my $file (@ARGV) {
 	my $out = new IO::File("$file,new", '>')
 		or die "$file,new: $!\n";
 
-	while(my $line = $in->getline) {
-		$line =~ s/$re/$trans{$&}/ge;
+	while(defined(my $line = $in->getline)) {
+		$line =~ s/$re/$trans{$1}/ge;
 		$out->write($line)
 			or die "$file,new: $!\n";
 	}
@@ -57,9 +58,15 @@ foreach my $file (@ARGV) {
 		or die "$file: $!\n";
 	$in->close
 		or die "$file: $!\n";
+	undef $in;
 
-	$out>close
+	$out->flush
 		or die "$file,new: $!\n";
+	$out->sync
+		or die "$file,new: $!\n";
+	$out->close
+		or die "$file,new: $!\n";
+	undef $out;
 
 	rename("$file,new", $file)
 		or die "rename($file,new -> $file): $!\n";
