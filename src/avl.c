@@ -883,7 +883,9 @@ AVL_CMP_DEFINE_NAMED(unsigned_long_long, unsigned long long)
 AVL_CMP_DEFINE_NAMED(long_double, long double)
 #endif
 
-#ifdef HAVE_C99
+#if AVL_HAVE_C99
+AVL_CMP_DEFINE_T(size)
+
 AVL_CMP_DEFINE_T(int8)
 AVL_CMP_DEFINE_T(uint8)
 AVL_CMP_DEFINE_T(int16)
@@ -912,9 +914,9 @@ AVL_CMP_DEFINE_T(int_least64)
 AVL_CMP_DEFINE_T(uint_least64)
 #endif
 
-#ifdef HAVE_POSIX
+#if AVL_HAVE_POSIX
 AVL_CMP_DEFINE_T(time)
-AVL_CMP_DEFINE_T(size)
+AVL_CMP_DEFINE_T(off)
 AVL_CMP_DEFINE_T(ssize)
 AVL_CMP_DEFINE_T(socklen)
 
