@@ -48,7 +48,7 @@ static void avl_rebalance(avl_tree_t *, avl_node_t *);
 #define NODE_DEPTH(n)  ((n) ? (n)->depth : 0)
 #define L_DEPTH(n)     (NODE_DEPTH((n)->left))
 #define R_DEPTH(n)     (NODE_DEPTH((n)->right))
-#define CALC_DEPTH(n)  ((unsigned char)((L_DEPTH(n)>R_DEPTH(n)?L_DEPTH(n):R_DEPTH(n)) + 1))
+#define CALC_DEPTH(n)  ((unsigned char)((L_DEPTH(n) > R_DEPTH(n) ? L_DEPTH(n) : R_DEPTH(n)) + 1))
 #endif
 
 const avl_node_t avl_node_0 = {0};
@@ -81,11 +81,11 @@ static int avl_check_balance(avl_node_t *avlnode) {
 #ifdef AVL_DEPTH
 	int d;
 	d = R_DEPTH(avlnode) - L_DEPTH(avlnode);
-	return d<-1?-1:d>1?1:0;
+	return d < -1 ? -1 : d > 1;
 #else
 /*	int d;
  *	d = ffs(R_COUNT(avlnode)) - ffs(L_COUNT(avlnode));
- *	d = d<-1?-1:d>1?1:0;
+ *	d = d < -1 ? -1 : d > 1;
  */
 #ifdef AVL_COUNT
 	int pl, r;
@@ -93,9 +93,9 @@ static int avl_check_balance(avl_node_t *avlnode) {
 	pl = ffs(L_COUNT(avlnode));
 	r = R_COUNT(avlnode);
 
-	if(r>>pl+1)
+	if(r >> pl + 1)
 		return 1;
-	if(pl<2 || r>>pl-2)
+	if(pl < 2 || r >> pl - 2)
 		return 0;
 	return -1;
 #else
