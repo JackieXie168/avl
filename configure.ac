@@ -7,6 +7,7 @@ AM_INIT_AUTOMAKE()
 
 AC_CONFIG_SRCDIR([src/avl.c])
 dnl AC_CONFIG_HEADER([src/avl.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CC

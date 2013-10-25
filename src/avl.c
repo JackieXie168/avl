@@ -33,6 +33,9 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#define AVL_INLINE
+#define AVL_NO_INLINE
+
 #include "avl.h"
 
 static void avl_rebalance(avl_tree_t *, avl_node_t *);
@@ -53,9 +56,10 @@ static void avl_rebalance(avl_tree_t *, avl_node_t *);
 
 const avl_node_t avl_node_0 = {0};
 const avl_tree_t avl_tree_0 = {0};
+const avl_allocator_t avl_allocator_0 = {0};
 
-#ifdef CAST_QUAL_KLUDGES
-static avl_node_t *avl_const_node(const avl_node_t *node) {
+#ifdef AVL_CAST_QUAL_KLUDGES
+static inline avl_node_t *avl_const_node(const avl_node_t *node) {
 	union {
 		const avl_node_t *c;
 		avl_node_t *v;
@@ -64,7 +68,7 @@ static avl_node_t *avl_const_node(const avl_node_t *node) {
 	return u.v;
 }
 
-static void *avl_const_item(const void *item) {
+static inline void *avl_const_item(const void *item) {
 	union {
 		const void *c;
 		void *v;
@@ -75,6 +79,12 @@ static void *avl_const_item(const void *item) {
 #else
 #define avl_const_node(x) ((avl_node_t *)(x))
 #define avl_const_item(x) ((void *)(x))
+#endif
+
+#ifdef __GNUC__
+#define unused __attribute__((unused))
+#else
+#define unused
 #endif
 
 static int avl_check_balance(avl_node_t *avlnode) {
@@ -156,6 +166,7 @@ unsigned long avl_index(const avl_node_t *avlnode) {
 
 static const avl_node_t *avl_search_leftmost_equal(const avl_tree_t *tree, const avl_node_t *node, const void *item) {
 	avl_cmp_t cmp = tree->cmp;
+	void *userdata = tree->userdata;
 	const avl_node_t *r = node;
 
 	for(;;) {
@@ -163,7 +174,7 @@ static const avl_node_t *avl_search_leftmost_equal(const avl_tree_t *tree, const
 			node = node->left;
 			if(!node)
 				return r;
-			if(cmp(item, node->item))
+			if(cmp(item, node->item, userdata))
 				break;
 			r = node;
 		}
@@ -171,7 +182,7 @@ static const avl_node_t *avl_search_leftmost_equal(const avl_tree_t *tree, const
 			node = node->right;
 			if(!node)
 				return r;
-			if(!cmp(item, node->item))
+			if(!cmp(item, node->item, userdata))
 				break;
 		}
 		r = node;
@@ -180,6 +191,7 @@ static const avl_node_t *avl_search_leftmost_equal(const avl_tree_t *tree, const
 
 static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, const avl_node_t *node, const void *item) {
 	avl_cmp_t cmp = tree->cmp;
+	void *userdata = tree->userdata;
 	const avl_node_t *r = node;
 
 	for(;;) {
@@ -187,7 +199,7 @@ static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, cons
 			node = node->right;
 			if(!node)
 				return r;
-			if(cmp(item, node->item))
+			if(cmp(item, node->item, userdata))
 				break;
 			r = node;
 		}
@@ -195,7 +207,7 @@ static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, cons
 			node = node->left;
 			if(!node)
 				return r;
-			if(!cmp(item, node->item))
+			if(!cmp(item, node->item, userdata))
 				break;
 		}
 		r = node;
@@ -213,6 +225,7 @@ static const avl_node_t *avl_search_rightmost_equal(const avl_tree_t *tree, cons
 static avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, int *exact) {
 	avl_node_t *node;
 	avl_cmp_t cmp;
+	void *userdata;
 	int c;
 
 	if(!exact)
@@ -226,9 +239,10 @@ static avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, 
 		return *exact = 0, (avl_node_t *)NULL;
 
 	cmp = tree->cmp;
+	userdata = tree->userdata;
 
 	for(;;) {
-		c = cmp(item, node->item);
+		c = cmp(item, node->item, userdata);
 
 		if(c < 0) {
 			if(node->left)
@@ -257,6 +271,7 @@ static avl_node_t *avl_search_leftish(const avl_tree_t *tree, const void *item, 
 static avl_node_t *avl_search_rightish(const avl_tree_t *tree, const void *item, int *exact) {
 	avl_node_t *node;
 	avl_cmp_t cmp;
+	void *userdata;
 	int c;
 
 	if(!exact)
@@ -270,9 +285,10 @@ static avl_node_t *avl_search_rightish(const avl_tree_t *tree, const void *item,
 		return *exact = 0, (avl_node_t *)NULL;
 
 	cmp = tree->cmp;
+	userdata = tree->userdata;
 
 	for(;;) {
-		c = cmp(item, node->item);
+		c = cmp(item, node->item, userdata);
 
 		if(c < 0) {
 			if(node->left)
@@ -377,20 +393,48 @@ avl_tree_t *avl_tree_clear(avl_tree_t *avltree) {
 	return avltree;
 }
 
+static void avl_node_free(avl_tree_t *avltree, avl_node_t *node) {
+	avl_allocator_t *allocator;
+	avl_deallocate_t deallocate;
+
+	allocator = avltree->allocator;
+	if(allocator) {
+		deallocate = allocator->deallocate;
+		if(deallocate)
+			deallocate(allocator, node);
+	} else {
+		free(node);
+	}
+}
+
 avl_tree_t *avl_tree_purge(avl_tree_t *avltree) {
 	avl_node_t *node, *next;
 	avl_free_t func;
+	avl_allocator_t *allocator;
+	avl_deallocate_t deallocate;
+	void *userdata;
 
 	if(!avltree)
 		return NULL;
 
+	userdata = avltree->userdata;
+
 	func = avltree->free;
+	allocator = avltree->allocator;
+	deallocate = allocator
+		? allocator->deallocate
+		: (avl_deallocate_t)NULL;
 
 	for(node = avltree->head; node; node = next) {
 		next = node->next;
 		if(func)
-			func(node->item);
-		free(node);
+			func(node->item, userdata);
+		if(allocator) {
+			if(deallocate)
+				deallocate(allocator, node);
+		} else {
+			free(node);
+		}
 	}
 
 	return avl_tree_clear(avltree);
@@ -419,12 +463,29 @@ avl_node_t *avl_node_init(avl_node_t *newnode, const void *item) {
 	return newnode;
 }
 
-avl_node_t *avl_node_malloc(const void *item) {
+avl_node_t *avl_alloc(avl_tree_t *avltree, const void *item) {
 	avl_node_t *newnode;
-	newnode = malloc(sizeof *newnode);
-	if(newnode)
-		newnode->item = avl_const_item(item);
-	return newnode;
+	avl_allocator_t *allocator = avltree
+		? avltree->allocator
+		: (avl_allocator_t *)NULL;
+	avl_allocate_t allocate;
+	if(allocator) {
+		allocate = allocator->allocate;
+		if(allocator) {
+			newnode = allocate(allocator);
+		} else {
+			errno = ENOSYS;
+			newnode = NULL;
+		}
+	} else {
+		newnode = malloc(sizeof *newnode);
+	}
+	return avl_node_init(newnode, item);
+}
+
+/* For backwards compatibility. */
+avl_node_t *avl_node_malloc_FIXME(const void *item) {
+	return avl_alloc(NULL, item);
 }
 
 /* Insert a node in an empty tree. If avlnode is NULL, the tree will be
@@ -526,11 +587,11 @@ avl_node_t *avl_item_insert(avl_tree_t *avltree, const void *item) {
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_malloc(item);
+	newnode = avl_alloc(avltree, item);
 	if(newnode) {
 		if(avl_insert(avltree, newnode))
 			return newnode;
-		free(newnode);
+		avl_node_free(avltree, newnode);
 		errno = EEXIST;
 	}
 	return NULL;
@@ -542,7 +603,7 @@ avl_node_t *avl_item_insert_somewhere(avl_tree_t *avltree, const void *item) {
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_malloc(item);
+	newnode = avl_alloc(avltree, item);
 	if(newnode)
 		return avl_insert_somewhere(avltree, newnode);
 	return NULL;
@@ -554,7 +615,7 @@ avl_node_t *avl_item_insert_before(avl_tree_t *avltree, avl_node_t *node, const 
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_malloc(item);
+	newnode = avl_alloc(avltree, item);
 	if(newnode)
 		return avl_insert_before(avltree, node, newnode);
 	return NULL;
@@ -566,7 +627,7 @@ avl_node_t *avl_item_insert_after(avl_tree_t *avltree, avl_node_t *node, const v
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_malloc(item);
+	newnode = avl_alloc(avltree, item);
 	if(newnode)
 		return avl_insert_after(avltree, node, newnode);
 	return NULL;
@@ -578,7 +639,7 @@ avl_node_t *avl_item_insert_left(avl_tree_t *avltree, const void *item) {
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_malloc(item);
+	newnode = avl_alloc(avltree, item);
 	if(newnode)
 		return avl_insert_left(avltree, newnode);
 	return NULL;
@@ -590,7 +651,7 @@ avl_node_t *avl_item_insert_right(avl_tree_t *avltree, const void *item) {
 	if(!avltree)
 		return errno = EFAULT, (avl_node_t *)NULL;
 
-	newnode = avl_node_malloc(item);
+	newnode = avl_alloc(avltree, item);
 	if(newnode)
 		return avl_insert_right(avltree, newnode);
 	return NULL;
@@ -661,8 +722,8 @@ void *avl_delete(avl_tree_t *avltree, avl_node_t *avlnode) {
 		item = avlnode->item;
 		(void)avl_unlink(avltree, avlnode);
 		if(avltree->free)
-			avltree->free(item);
-		free(avlnode);
+			avltree->free(item, avltree->userdata);
+		avl_node_free(avltree, avlnode);
 	}
 	return item;
 }
@@ -852,13 +913,11 @@ static void avl_rebalance(avl_tree_t *avltree, avl_node_t *avlnode) {
 	}
 }
 
-#define AVL_CMP_DEFINE_NAMED(n,t) \
-	__extension__ \
-	__attribute__((const)) \
-	int avl_##n##_cmp(const t a, const t b) { return AVL_CMP(a, b); } \
+#define AVL_CMP_DEFINE_NAMED(n, t) \
 	__extension__ \
 	__attribute__((pure)) \
-	int avl_##n##_ptr_cmp(const t *a, const t *b) { return AVL_CMP(*a, *b); }
+	int avl_##n##_cmp(const void *a, const void *b, void *userdata) { return AVL_CMP(*(const t *)a, *(const t *)b); }
+
 #define AVL_CMP_DEFINE_T(t) AVL_CMP_DEFINE_NAMED(t, t##_t)
 #define AVL_CMP_DEFINE(t) AVL_CMP_DEFINE_NAMED(t, t)
 
@@ -875,7 +934,10 @@ AVL_CMP_DEFINE_NAMED(unsigned_short, unsigned short)
 AVL_CMP_DEFINE_NAMED(unsigned_int, unsigned int)
 AVL_CMP_DEFINE_NAMED(unsigned_long, unsigned long)
 
-AVL_CMP_DEFINE_NAMED(pointer, void *)
+AVL_CMP_DEFINE_T(size)
+AVL_CMP_DEFINE_T(ssize)
+
+AVL_CMP_DEFINE_NAMED(pointer, const void *)
 
 #ifdef __GNUC__
 AVL_CMP_DEFINE_NAMED(long_long, long long)
@@ -884,8 +946,6 @@ AVL_CMP_DEFINE_NAMED(long_double, long double)
 #endif
 
 #if AVL_HAVE_C99
-AVL_CMP_DEFINE_T(size)
-
 AVL_CMP_DEFINE_T(int8)
 AVL_CMP_DEFINE_T(uint8)
 AVL_CMP_DEFINE_T(int16)
@@ -915,17 +975,36 @@ AVL_CMP_DEFINE_T(uint_least64)
 #endif
 
 #if AVL_HAVE_POSIX
+#include <sys/time.h>
+#include <sys/socket.h>
+
 AVL_CMP_DEFINE_T(time)
 AVL_CMP_DEFINE_T(off)
-AVL_CMP_DEFINE_T(ssize)
 AVL_CMP_DEFINE_T(socklen)
 
 __attribute__((pure))
-int avl_timeval_cmp(const struct timeval *a, const struct timeval *b) {
-	int r;
-	r = AVL_CMP(a->tv_sec, b->tv_sec);
-	if(!r)
-		r = AVL_CMP(a->tv_usec, b->tv_usec);
-	return r;
+int avl_timeval_cmp(const void *a, const void *b, void *userdata) {
+	int r = AVL_CMP(((struct timeval *)a)->tv_sec, ((struct timeval *)b)->tv_sec);
+	if(r)
+		return r;
+	return AVL_CMP(((struct timeval *)a)->tv_usec, ((struct timeval *)b)->tv_usec);
+}
+
+__attribute__((pure))
+int avl_timespec_cmp(const void *a, const void *b, void *userdata) {
+	int r = AVL_CMP(((struct timespec *)a)->tv_sec, ((struct timespec *)b)->tv_sec);
+	if(r)
+		return r;
+	return AVL_CMP(((struct timespec *)a)->tv_nsec, ((struct timespec *)b)->tv_nsec);
+}
+
+__attribute__((pure))
+int avl_strcmp(const void *a, const void *b, void *userdata) {
+	return strcmp(a, b);
+}
+
+__attribute__((pure))
+int avl_strcasecmp(const void *a, const void *b, void *userdata) {
+	return strcasecmp(a, b);
 }
 #endif

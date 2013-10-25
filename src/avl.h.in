@@ -59,14 +59,14 @@
  *    0  if a = b
  *    1  if a > b
  */
-typedef int (*avl_cmp_t)(const void *, const void *);
+typedef int (*avl_cmp_t)(const void *a, const void *b, void *userdata);
 
 /* User supplied function to delete an item when a node is free()d.
  * If NULL, the item is not free()d.
  */
-typedef void (*avl_free_t)(void *);
+typedef void (*avl_free_t)(void *item, void *userdata);
 
-#define AVL_CMP(a,b) ((a) < (b) ? -1 : (a) > (b))
+#define AVL_CMP(a,b) ((a) < (b) ? -1 : (a) != (b))
 
 #if defined(AVL_COUNT) && defined(AVL_DEPTH)
 #define AVL_NODE_INITIALIZER(item) { 0, 0, 0, 0, 0, (item), 0, 0 }
@@ -91,7 +91,7 @@ typedef struct avl_node_t {
 
 extern const avl_node_t avl_node_0;
 
-#define AVL_TREE_INITIALIZER(cmp,free) { 0, 0, 0, (cmp), (free) }
+#define AVL_TREE_INITIALIZER(cmp, free) { 0, 0, 0, (cmp), (free), {0}, 0, 0 }
 
 typedef struct avl_tree_t {
 	avl_node_t *head;
@@ -99,12 +99,24 @@ typedef struct avl_tree_t {
 	avl_node_t *top;
 	avl_cmp_t cmp;
 	avl_free_t free;
-	void *reserved1;
-	void *reserved2;
-	void *reserved3;
+	void *userdata;
+	struct avl_allocator *allocator;
+	void *reserved;
 } avl_tree_t;
 
 extern const avl_tree_t avl_tree_0;
+
+#define AVL_ALLOCATOR_INITIALIZER(alloc, dealloc) { (alloc), (dealloc) }
+
+typedef avl_node_t *(*avl_allocate_t)(struct avl_allocator *);
+typedef void (*avl_deallocate_t)(struct avl_allocator *, avl_node_t *);
+
+typedef struct avl_allocator {
+	avl_allocate_t allocate;
+	avl_deallocate_t deallocate;
+} avl_allocator_t;
+
+extern const avl_allocator_t avl_allocator_0;
 
 /* Initializes a new tree for elements that will be ordered using
  * the supplied strcmp()-like function.
@@ -123,6 +135,12 @@ extern avl_tree_t *avl_tree_malloc(avl_cmp_t, avl_free_t);
  * O(n) */
 extern void avl_tree_free(avl_tree_t *);
 
+/* Free space of a tree or node data structure. It interpretes the
+ * ->allocator field as a function compatible with free() and calls it.
+ * For use as the ->deallocate member of avl_tree_t.
+ * O(1) */
+extern void avl_deallocate(void *, void *);
+
 /* Reinitializes the tree structure for reuse. Nothing is free()d.
  * Compare and free functions are left alone.
  * Returns the value of avltree (even if it's NULL).
@@ -138,12 +156,12 @@ extern avl_tree_t *avl_tree_purge(avl_tree_t *);
 /* Allocates and initializes memory for use as a node.
  * Returns the value of avlnode (or NULL if the allocation failed).
  * O(1) */
-extern avl_node_t *avl_node_malloc(const void *item);
+extern avl_node_t *avl_alloc(avl_tree_t *, const void *item);
 
 /* Initializes memory for use as a node.
  * Returns the value of avlnode (even if it's NULL).
  * O(1) */
-extern avl_node_t *avl_node_init(avl_node_t *avlnode, const void *item);
+extern avl_node_t *avl_node_init(avl_node_t *, const void *item);
 
 /* Insert an item into the tree and return the new node.
  * Returns NULL and sets errno if memory for the new node could not be
@@ -294,6 +312,12 @@ AVL_DEPRECATED
 extern avl_node_t *avl_insert_top_FIXME(avl_tree_t *, avl_node_t *avlnode);
 #endif
 
+/* Allocate and initialize a node.
+ * O(1) */
+AVL_DEPRECATED
+extern avl_node_t *avl_node_malloc_FIXME(const void *item);
+#endif
+
 #ifdef AVL_COUNT
 /* Returns the number of nodes in the tree.
  * O(1) */
@@ -309,17 +333,11 @@ extern avl_node_t *avl_at(const avl_tree_t *, unsigned long);
 extern unsigned long avl_index(const avl_node_t *);
 #endif
 
-#endif
-
-#define AVL_CMP_DECLARE_NAMED(n,t) \
-	__extension__ \
-	__attribute__((const)) \
-	extern int avl_##n##_cmp(const t, const t); \
-	__extension__ \
+#define AVL_CMP_DECLARE_NAMED(n) \
 	__attribute__((pure)) \
-	extern int avl_##n##_ptr_cmp(const t *, const t *);
-#define AVL_CMP_DECLARE_T(t) AVL_CMP_DECLARE_NAMED(t, t##_t)
-#define AVL_CMP_DECLARE(t) AVL_CMP_DECLARE_NAMED(t, t)
+	extern int avl_##n##_cmp(const void *, const void *, void *);
+
+#define AVL_CMP_DECLARE(n) AVL_CMP_DECLARE_NAMED(n##_cmp)
 
 AVL_CMP_DECLARE(float)
 AVL_CMP_DECLARE(double)
@@ -327,53 +345,56 @@ AVL_CMP_DECLARE(char)
 AVL_CMP_DECLARE(short)
 AVL_CMP_DECLARE(int)
 AVL_CMP_DECLARE(long)
-AVL_CMP_DECLARE_NAMED(unsigned_char, unsigned char)
-AVL_CMP_DECLARE_NAMED(unsigned_short, unsigned short)
-AVL_CMP_DECLARE_NAMED(unsigned_int, unsigned int)
-AVL_CMP_DECLARE_NAMED(unsigned_long, unsigned long)
-AVL_CMP_DECLARE_NAMED(pointer, void *)
-#define avl_ptr_cmp avl_pointer_cmp
-#define avl_ptrptr_cmp avl_pointerptr_cmp
+AVL_CMP_DECLARE(unsigned_char)
+AVL_CMP_DECLARE(unsigned_short)
+AVL_CMP_DECLARE(unsigned_int)
+AVL_CMP_DECLARE(unsigned_long)
+AVL_CMP_DECLARE(pointer)
+AVL_CMP_DECLARE(size)
+AVL_CMP_DECLARE(ssize)
+AVL_CMP_DECLARE(pointer)
 
 #ifdef __GNUC__
-AVL_CMP_DECLARE_NAMED(long_long, long long)
-AVL_CMP_DECLARE_NAMED(unsigned_long_long, unsigned long long)
-AVL_CMP_DECLARE_NAMED(long_double, long double)
+AVL_CMP_DECLARE(long_long)
+AVL_CMP_DECLARE(unsigned_long_long)
+AVL_CMP_DECLARE(long_double)
 #endif
 
 #if AVL_HAVE_C99
-AVL_CMP_DECLARE_T(int8)
-AVL_CMP_DECLARE_T(uint8)
-AVL_CMP_DECLARE_T(int16)
-AVL_CMP_DECLARE_T(uint16)
-AVL_CMP_DECLARE_T(int32)
-AVL_CMP_DECLARE_T(uint32)
-AVL_CMP_DECLARE_T(int64)
-AVL_CMP_DECLARE_T(uint64)
-AVL_CMP_DECLARE_T(int_fast8)
-AVL_CMP_DECLARE_T(uint_fast8)
-AVL_CMP_DECLARE_T(int_fast16)
-AVL_CMP_DECLARE_T(uint_fast16)
-AVL_CMP_DECLARE_T(int_fast32)
-AVL_CMP_DECLARE_T(uint_fast32)
-AVL_CMP_DECLARE_T(int_fast64)
-AVL_CMP_DECLARE_T(uint_fast64)
-AVL_CMP_DECLARE_T(int_least8)
-AVL_CMP_DECLARE_T(uint_least8)
-AVL_CMP_DECLARE_T(int_least16)
-AVL_CMP_DECLARE_T(uint_least16)
-AVL_CMP_DECLARE_T(int_least32)
-AVL_CMP_DECLARE_T(uint_least32)
-AVL_CMP_DECLARE_T(int_least64)
-AVL_CMP_DECLARE_T(uint_least64)
+AVL_CMP_DECLARE(int8)
+AVL_CMP_DECLARE(uint8)
+AVL_CMP_DECLARE(int16)
+AVL_CMP_DECLARE(uint16)
+AVL_CMP_DECLARE(int32)
+AVL_CMP_DECLARE(uint32)
+AVL_CMP_DECLARE(int64)
+AVL_CMP_DECLARE(uint64)
+
+AVL_CMP_DECLARE(int_fast8)
+AVL_CMP_DECLARE(uint_fast8)
+AVL_CMP_DECLARE(int_fast16)
+AVL_CMP_DECLARE(uint_fast16)
+AVL_CMP_DECLARE(int_fast32)
+AVL_CMP_DECLARE(uint_fast32)
+AVL_CMP_DECLARE(int_fast64)
+AVL_CMP_DECLARE(uint_fast64)
+
+AVL_CMP_DECLARE(int_least8)
+AVL_CMP_DECLARE(uint_least8)
+AVL_CMP_DECLARE(int_least16)
+AVL_CMP_DECLARE(uint_least16)
+AVL_CMP_DECLARE(int_least32)
+AVL_CMP_DECLARE(uint_least32)
+AVL_CMP_DECLARE(int_least64)
+AVL_CMP_DECLARE(uint_least64)
 #endif
 
 #if AVL_HAVE_POSIX
-AVL_CMP_DECLARE_T(time)
-AVL_CMP_DECLARE_T(size)
-AVL_CMP_DECLARE_T(ssize)
-AVL_CMP_DECLARE_T(socklen)
+AVL_CMP_DECLARE(time)
+AVL_CMP_DECLARE(socklen)
 
-__attribute__((pure))
-extern int avl_timeval_cmp(const struct timeval *, const struct timeval *);
+AVL_CMP_DECLARE(timeval)
+AVL_CMP_DECLARE(timespec)
+AVL_CMP_DECLARE_NAMED(strcmp)
+AVL_CMP_DECLARE_NAMED(strcasecmp)
 #endif
