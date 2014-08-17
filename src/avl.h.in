@@ -397,4 +397,5 @@ AVL_CMP_DECLARE(timeval)
 AVL_CMP_DECLARE(timespec)
 AVL_CMP_DECLARE_NAMED(strcmp)
 AVL_CMP_DECLARE_NAMED(strcasecmp)
+AVL_CMP_DECLARE_NAMED(pointer)
 #endif
