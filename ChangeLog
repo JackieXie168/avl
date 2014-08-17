@@ -1,0 +1,10 @@
+- manpages for:
+
+  AVL_CMP macros
+  AVL_INIT macros
+  _0 consts
+  structs
+
+  avl
+
+- avl_malloc + avl_free
